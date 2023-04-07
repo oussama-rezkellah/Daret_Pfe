@@ -42,9 +42,9 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="email" placeholder="Email Address" value="{{old('email')}}">
+                                <input type="text" class="form-control" name="email" placeholder="Email Address">
                                 @error('email')
-                                 <p class="text-red-500 text-xs mt-1" style="color: red">{{$message}}</p>
+                                 <p class="text-red-500 text-xs mt-1">{{$message}}</p>
                                 @enderror
                             </div>
                         </div>

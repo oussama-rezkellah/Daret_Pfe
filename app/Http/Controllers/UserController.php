@@ -5,41 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function login(){
+    public function login()
+    {
         return view('users.login');
     }
-    public function register(){
-        return view('users.register');
-    }
-    public function store(){
-        $formFields = request()->validate([
-            'name' => ['required', 'min:3'],
-            'username' => ['required', Rule::unique('users', 'username')],
-            'email' => ['required', 'email', Rule::unique('users', 'email')],
-            'password' => 'required|confirmed|min:6'
-        ]);
-
-        $formFields['password'] = bcrypt($formFields['password']);
-
-        $user=User::create($formFields);
-
-        auth()->login($user);
-
-        return redirect('/')->with('message', 'User created and logged in');
-
-
-        
-    }
-    public function auth(){
+    public function auth()
+    {
         $formFields = request()->validate([
             'email' => ['required', 'email'],
             'password' => 'required'
         ]);
 
-        if(auth()->attempt($formFields)) {
+        if (auth()->attempt($formFields)) {
             request()->session()->regenerate();
 
             return redirect('/')->with('message', 'You are now logged in!');
@@ -47,8 +28,34 @@ class UserController extends Controller
 
         return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('email');
     }
-    
-    public function logout(){
+    ///
+    public function register()
+    {
+        return view('users.register');
+    }
+    public function store()
+    {
+        $formFields = request()->validate([
+            'name' => ['required', 'min:3'],
+            'username' => ['required', Rule::unique('users', 'username')],
+            'email' => ['required', 'email', Rule::unique('users', 'email')],
+            'phone' => 'required|min:10',
+            'password' => 'required|confirmed|min:6'
+        ]);
+
+        $formFields['password'] = hash::make($formFields['password']);
+
+
+        $user = User::create($formFields);
+
+        auth()->login($user);
+
+        return redirect('/')->with('message', 'User created and logged in');
+    }
+
+
+    public function logout()
+    {
         auth()->logout();
 
         request()->session()->invalidate();

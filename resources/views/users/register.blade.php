@@ -41,41 +41,41 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="name" placeholder="Name">
+                                <input type="text" class="form-control" name="name" placeholder="Name" value="{{old('nanme')}}">
                                 @error('name')
-                                <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                                <p class="text-red-500 text-xs mt-1"  style="color: red">{{$message}}</p>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="username" placeholder="Username">
+                                <input type="text" class="form-control" name="username" placeholder="Username" value="{{old('username')}}">
                                 @error('username')
-                                <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                                <p class="text-red-500 text-xs mt-1" style="color: red">{{$message}}</p>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="email" placeholder="Email Address">
+                                <input type="text" class="form-control" name="email" placeholder="Email Address" value="{{old('email')}}">
                                 @error('email')
-                                <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                                <p class="text-red-500 text-xs mt-1" style="color: red">{{$message}}</p>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="password" class="form-control" name="password" placeholder="Password">
+                                <input type="password" class="form-control" name="password" placeholder="Password" value="{{old('password')}}" >
                                 @error('password')
-                                <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                                <p class="text-red-500 text-xs mt-1" style="color: red">{{$message}}</p>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
+                                <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password" value="{{old('password_confirmation')}}">
                                 @error('password_confirmation')
-                                <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                                <p class="text-red-500 text-xs mt-1" style="color: red">{{$message}}</p>
                                 @enderror
                             </div>
                         </div>

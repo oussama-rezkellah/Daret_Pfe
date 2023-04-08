@@ -37,5 +37,33 @@ Route::name('user.')->prefix('user')->group(function () {
         Route::get('/{user}', 'show')->name('show')
             ->middleware('auth')
             ->where('user', '\d+');
+        Route::post('/{user}/update', 'update_img')->name('img')
+            ->middleware('auth')
+            ->where('user', '\d+');
+    });
+});
+
+//categories
+
+Route::name('daret.')->prefix('daret')->group(function () {
+    Route::controller('App\Http\Controllers\DaretController')->group(function () {
+
+        Route::get('/{user}', 'index')->name('darets')
+            ->middleware('auth')
+            ->where('user', '\d+');
+
+
+            
+        Route::get('show/{daret}', 'show')->name('show')
+            ->middleware('auth')
+            ->where('daret', '\d+');
+
+
+        Route::get('/create', 'create')->name('create')
+            ->middleware('auth')
+            ->where('', '\d+');
+        Route::post('/create', 'store')->name('store')
+            ->middleware('auth')
+            ->where('', '\d+');
     });
 });

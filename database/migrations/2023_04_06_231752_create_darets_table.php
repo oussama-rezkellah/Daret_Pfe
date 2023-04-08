@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('darets', function (Blueprint $table) {
             $table->id();
+               $table->string('name');
             $table->string('type_ordre');
             $table->string('type_periode');
             $table->double('montant');
             $table->integer('nbr_tour');
             $table->integer('nbr_membre');
-            $table->integer('etat');
+            $table->integer('etat')->default(0);
+            $table->date('type_ordre');
+            $table->date('type_ordre');
             $table->timestamps();
         });
     }

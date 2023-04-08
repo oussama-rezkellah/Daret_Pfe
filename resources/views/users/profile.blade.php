@@ -384,9 +384,14 @@
                                             <img src="../images/default_img.webp" alt="Avatar" class="avatar img-circle">
                                             <div class="profile-img-caption">
                                                 <label for="updateProfilePic" class="upload">
+                                              
                                                     <i class='bx bxs-camera'></i> Update
                                                     <input type="file" id="updateProfilePicInput" class="text-center upload">
+                                                   
+                                                    {{-- <input type="submit" name="" id="" value=""> --}}
                                                 </label>
+                                              
+                                           
                                             </div>
                                         </div>
                                         <p class="profile-fullname mt-3">{{$user->name}}</p>

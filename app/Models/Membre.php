@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Membre extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'daret_id',
+        'role',
+    ];
     function user()
     {
         return $this->belongsTo(User::class);
@@ -21,5 +26,4 @@ class Membre extends Model
     {
         return $this->hasMany(Tour::class);
     }
-
 }

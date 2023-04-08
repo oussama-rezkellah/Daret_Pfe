@@ -419,7 +419,7 @@
                             </li>
                             <li class="nav-item s-nav">
                            
-                                <a href="{{route('user.show',session('user')->id)}}" class="nav-link nav-links">
+                                <a href="" class="nav-link nav-links">
                                     <div class="menu-user-image">
                                         <img src="images/users/user-4.jpg" class="menu-user-img ml-1" alt="Menu Image">
                                     </div>
@@ -474,7 +474,7 @@
                                     <span class="badge badge-primary badge-pill">2</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <a href="groups.html" class="sidebar-item"><img src="images/icons/left-sidebar/group.png" alt="group"> Groups</a>
+                                    <a href="{{route('daret.darets',session('user')->id)}}" class="sidebar-item"><img src="images/icons/left-sidebar/group.png" alt="group"> Groups</a>
                                     <span class="badge badge-primary badge-pill">17</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">

@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Daret extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'montant',
+        'type_ordre',
+        'type_periode',
+        'nbr_tour',
+        'etat',
+        'nbr_membre'
+    ];
 
 
     function invitations()

@@ -21,6 +21,11 @@ class StoreDaretRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [];
+        return [
+            'montant' => 'required|numeric',
+            'type_periode' => 'required',
+            'type_ordre' => 'required',
+            'nbr_membre' => 'required'
+        ];
     }
 }

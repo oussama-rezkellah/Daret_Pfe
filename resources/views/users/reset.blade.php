@@ -37,37 +37,27 @@
                         </div>
                     </div>
                 </div>
-                @if (session('message'))
-                        <div class="alert alert-success">
-                                {{ session('message') }}
-                         </div>
-                @endif
-                <form action="/users/auth" method="Post">
+                <form action="/users/reset" method="Post">
                     @csrf
+                    <input type="hidden" name="id" value="{{ $id }}">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="login" placeholder="Email Or Username" value="{{old('login')}}">
-                                @error('login')
+                                <input type="password" class="form-control" name="password" placeholder="Password" value="{{old('password')}}">
+                                @error('password')
                                  <p class="text-red-500 text-xs mt-1" style="color: red">{{$message}}</p>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="password" class="form-control" name="password" placeholder="Password">
+                                <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
                             </div>
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <a href="/forget">Forgot password?</a>
                         </div>
                         <div class="col-md-6 text-right">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary sign-up">Sign In</button>
+                                <button type="submit" class="btn btn-primary sign-up">Change Password</button>
                             </div>
-                        </div>
-                        <div class="col-md-12 text-center mt-5">
-                            <span class="go-login">Not yet a member? <a href="/register">Sign Up</a></span>
                         </div>
                     </div>
                 </form>

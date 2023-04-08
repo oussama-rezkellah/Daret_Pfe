@@ -37,33 +37,23 @@
                         </div>
                     </div>
                 </div>
-                @if (session('message'))
-                        <div class="alert alert-success">
-                                {{ session('message') }}
-                         </div>
-                @endif
-                <form action="/users/auth" method="Post">
+                <form action="/users/forget" method="Post">
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="login" placeholder="Email Or Username" value="{{old('login')}}">
-                                @error('login')
+                                <input type="text" class="form-control" name="email" placeholder="Email" value="{{old('email')}}">
+                                @error('email')
                                  <p class="text-red-500 text-xs mt-1" style="color: red">{{$message}}</p>
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <input type="password" class="form-control" name="password" placeholder="Password">
-                            </div>
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <a href="/forget">Forgot password?</a>
+                        <div class="col-md-6">
+                            <span class="go-login">Already a member? <a href="/login">Sign In</a></span>
                         </div>
                         <div class="col-md-6 text-right">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary sign-up">Sign In</button>
+                                <button type="submit" class="btn btn-primary sign-up">Send</button>
                             </div>
                         </div>
                         <div class="col-md-12 text-center mt-5">

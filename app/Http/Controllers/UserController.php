@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Mail\ResetMail;
 use Illuminate\Http\Request;
 use App\Mail\VerificationMail;
 use Illuminate\Validation\Rule;
@@ -15,6 +16,22 @@ class UserController extends Controller
     }
     public function register(){
         return view('users.register');
+    }
+    public function forgetform(){
+        return view('users.forget');
+    }
+    public function resetform(Request $request){
+        $resetCode = $request->input('reset');
+        $userId = $request->input('id');
+        $user = User::find($userId);
+        if (!$user) {
+            abort(404, 'user not found');
+        }
+        if ($user->code_reset !== $resetCode ) {
+            abort(404, 'user not found');
+        }
+
+        return view('users.reset' , ['id' => $userId ]);
     }
     public function store(){
         $formFields = request()->validate([
@@ -30,10 +47,7 @@ class UserController extends Controller
 
         Mail::to($user->email)->send(new VerificationMail($user->id,$user->code));
 
-        return redirect('/login')->with('message', 'We have sent a verification email');
-
-
-        
+        return redirect('/login')->with('message', 'We have sent a verification email');    
     }
     public function auth(){
         $formFields = request()->validate([
@@ -52,7 +66,7 @@ class UserController extends Controller
         }
         
         if ($user->code !== null) {
-            return back()->withErrors('login', 'Your account is not verified. Please verify your email.')->onlyInput('login');
+            return back()->with('message', 'Your account is not verified. Please verify your email.');
         }
         if(auth()->attempt([$fieldType => $formFields['login'], 'password' => $formFields['password']])) {
             request()->session()->regenerate();
@@ -92,5 +106,37 @@ class UserController extends Controller
             // Redirect the user to the login page with an error message
             return redirect('/login')->with('error', 'Invalid verification link.');
         }
+    }
+    public function forget(){
+        $formFields = request()->validate([
+            'email' => ['required', 'email']
+        ]);
+        $user = User::where('email', $formFields['email'])->first();
+        if (!$user) {
+            return back()->withErrors(['email' => 'We could not find an account with that email address.']);
+        }
+        $formFields['code_reset'] = bcrypt(rand());
+        $user->code_reset = $formFields['code_reset'];
+        $user->save();
+        Mail::to($user->email)->send(new ResetMail($user->id,$user->code_reset));
+
+        return redirect('/login')->with('message', 'We have sent a reset email');
+        
+    }
+    public function reset(){
+        $formFields = request()->validate([
+            'password' => 'required|confirmed|min:6'
+        ]);
+        $formFields['id'] = request()->id;
+        $user = User::find($formFields['id']);
+        if (!$user) {
+            abort(404, 'user not found');        
+        }
+        $formFields['password'] = bcrypt($formFields['password']);
+        $user->code_reset = null;
+        $user->password = $formFields['password'];
+        $user->save();
+        return redirect('/login')->with('message', 'Your password has been changed');
+
     }
 }

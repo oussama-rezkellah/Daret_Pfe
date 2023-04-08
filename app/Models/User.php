@@ -22,6 +22,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'image'
     ];
 
     /**
@@ -59,5 +60,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
-
 }

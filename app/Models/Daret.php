@@ -22,5 +22,4 @@ class Daret extends Model
     {
         return $this->hasMany(membre::class);
     }
-
 }

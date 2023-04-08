@@ -37,13 +37,18 @@
                         </div>
                     </div>
                 </div>
+                @if (session('message'))
+                        <div class="alert alert-success">
+                                {{ session('message') }}
+                         </div>
+                @endif
                 <form action="/users/auth" method="Post">
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="email" placeholder="Email Address" value="{{old('email')}}">
-                                @error('email')
+                                <input type="text" class="form-control" name="login" placeholder="Email Or Username" value="{{old('login')}}">
+                                @error('login')
                                  <p class="text-red-500 text-xs mt-1" style="color: red">{{$message}}</p>
                                 @enderror
                             </div>

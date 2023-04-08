@@ -21,6 +21,8 @@ Route::post('/users', [UserController::class , 'store'])->middleware('guest');
 
 Route::post('/users/auth', [UserController::class , 'auth'])->middleware('guest');
 
+Route::get('/user/verify', [UserController::class , 'verify'])->middleware('guest');
+
 Route::post('/logout', [UserController::class , 'logout'])->middleware('auth');
 
 Route::get('/', function () {

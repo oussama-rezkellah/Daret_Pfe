@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Membre extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'daret_id',
+        'user_id',
+        'role',
+    ];
     function user()
     {
         return $this->belongsTo(User::class);

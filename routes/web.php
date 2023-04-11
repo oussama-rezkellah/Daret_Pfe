@@ -32,7 +32,26 @@ Route::get('/reset', [UserController::class, 'resetform'])->middleware('guest');
 
 Route::post('/users/reset', [UserController::class, 'reset'])->middleware('guest');
 
-Route::post('/logout', [UserController::class, 'logout'])->middleware('auth');
+Route::get('/logout', [UserController::class, 'logout'])->middleware('auth');
+
+Route::get('/setting', [UserController::class, 'settingform'])->middleware('auth');
+
+Route::put('/setting', [UserController::class, 'settingupdate'])->middleware('auth');
+
+Route::get('/setting/contact', [UserController::class, 'contactform'])->middleware('auth');
+
+Route::get('/setting/password', [UserController::class, 'passwordform'])->middleware('auth');
+
+Route::put('/setting/password', [UserController::class, 'passwordupdate'])->middleware('auth');
+
+Route::put('/setting/contact', [UserController::class, 'contactupdate'])->middleware('auth');
+
+Route::post('/profileupdate', [UserController::class, 'imageupdate'])->middleware('auth');
+
+
+Route::get('/check-username', [UserController::class, 'checkUsername']);
+
+Route::get('/checkemail', [UserController::class, 'checkemail']);
 
 Route::get('/', function () {
     return view('home');

@@ -391,9 +391,9 @@
                             <div class="handle"></div>
                         </button>
                     </a>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="/setting">
                         <img src="images/icons/navbar/gear-1.png" alt="Navbar icon"> Settings</a>
-                    <a class="dropdown-item logout-btn" href="#">
+                    <a class="dropdown-item logout-btn" href="/logout">
                         <img src="images/icons/navbar/logout.png" alt="Navbar icon"> Log Out</a>
                 </div>
             </li>

@@ -41,8 +41,16 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="name" placeholder="Name" value="{{old('nanme')}}">
-                                @error('name')
+                                <input type="text" class="form-control" name="first_name" placeholder="First Name" value="{{old('first_name')}}">
+                                @error('first_name')
+                                <p class="text-red-500 text-xs mt-1"  style="color: red">{{$message}}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="last_name" placeholder="Last Name" value="{{old('last_name')}}">
+                                @error('last_name')
                                 <p class="text-red-500 text-xs mt-1"  style="color: red">{{$message}}</p>
                                 @enderror
                             </div>

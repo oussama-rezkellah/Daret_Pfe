@@ -25,26 +25,18 @@
 </head>
 
 <body>
+
+
+    @include('daret.head')
+    @yield('main')
   
 
-@include('partials.nav')
 
-home
-@auth
-<form class="inline" method="POST" action="/logout">
-    @csrf
-    <button type="submit">
-      <i class="fa-solid fa-door-closed"></i> Logout
-    </button>
-  </form>
-@endauth
 
-@include('partials.footer')
-    <!-- Core -->
     <script src="js/jquery/jquery-3.3.1.min.js"></script>
     <script src="js/popper/popper.min.js"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
-    <!-- Optional -->
+ 
     <script type="text/javascript">
         $("#menu-toggle").click(function (e) {
             e.preventDefault();

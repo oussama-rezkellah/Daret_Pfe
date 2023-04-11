@@ -11,29 +11,34 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
-    public function login(){
+    public function login()
+    {
         return view('users.login');
     }
-    public function register(){
+    public function register()
+    {
         return view('users.register');
     }
-    public function forgetform(){
+    public function forgetform()
+    {
         return view('users.forget');
     }
-    public function resetform(Request $request){
+    public function resetform(Request $request)
+    {
         $resetCode = $request->input('reset');
         $userId = $request->input('id');
         $user = User::find($userId);
         if (!$user) {
             abort(404, 'user not found');
         }
-        if ($user->code_reset !== $resetCode ) {
+        if ($user->code_reset !== $resetCode) {
             abort(404, 'user not found');
         }
 
-        return view('users.reset' , ['id' => $userId ]);
+        return view('users.reset', ['id' => $userId]);
     }
-    public function store(){
+    public function store()
+    {
         $formFields = request()->validate([
             'name' => ['required', 'min:3'],
             'username' => ['required', Rule::unique('users', 'username')],
@@ -45,30 +50,31 @@ class UserController extends Controller
         $formFields['code'] = bcrypt(rand());
         $user = User::create($formFields);
 
-        Mail::to($user->email)->send(new VerificationMail($user->id,$user->code));
+        Mail::to($user->email)->send(new VerificationMail($user->id, $user->code));
 
-        return redirect('/login')->with('message', 'We have sent a verification email');    
+        return redirect('/login')->with('message', 'We have sent a verification email');
     }
-    public function auth(){
+    public function auth()
+    {
         $formFields = request()->validate([
             'login' => 'required',
             'password' => 'required'
         ]);
         $fieldType = filter_var($formFields['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $user = User::where(function($query) use ($formFields) {
+        $user = User::where(function ($query) use ($formFields) {
             $query->where('email', $formFields['login'])
-                  ->orWhere('username', $formFields['login']);
+                ->orWhere('username', $formFields['login']);
         })->first();
-        
+
         if (!$user) {
             return back()->withErrors(['login' => 'Invalid Credentials'])->onlyInput('login');
         }
-        
+
         if ($user->code !== null) {
             return back()->with('message', 'Your account is not verified. Please verify your email.');
         }
-        if(auth()->attempt([$fieldType => $formFields['login'], 'password' => $formFields['password']])) {
+        if (auth()->attempt([$fieldType => $formFields['login'], 'password' => $formFields['password']])) {
             request()->session()->regenerate();
 
             return redirect('/')->with('message', 'You are now logged in!');
@@ -76,8 +82,9 @@ class UserController extends Controller
 
         return back()->withErrors(['login' => 'Invalid Credentials'])->onlyInput('login');
     }
-    
-    public function logout(){
+
+    public function logout()
+    {
         auth()->logout();
 
         request()->session()->invalidate();
@@ -107,7 +114,8 @@ class UserController extends Controller
             return redirect('/login')->with('error', 'Invalid verification link.');
         }
     }
-    public function forget(){
+    public function forget()
+    {
         $formFields = request()->validate([
             'email' => ['required', 'email']
         ]);
@@ -118,25 +126,24 @@ class UserController extends Controller
         $formFields['code_reset'] = bcrypt(rand());
         $user->code_reset = $formFields['code_reset'];
         $user->save();
-        Mail::to($user->email)->send(new ResetMail($user->id,$user->code_reset));
+        Mail::to($user->email)->send(new ResetMail($user->id, $user->code_reset));
 
         return redirect('/login')->with('message', 'We have sent a reset email');
-        
     }
-    public function reset(){
+    public function reset()
+    {
         $formFields = request()->validate([
             'password' => 'required|confirmed|min:6'
         ]);
         $formFields['id'] = request()->id;
         $user = User::find($formFields['id']);
         if (!$user) {
-            abort(404, 'user not found');        
+            abort(404, 'user not found');
         }
         $formFields['password'] = bcrypt($formFields['password']);
         $user->code_reset = null;
         $user->password = $formFields['password'];
         $user->save();
         return redirect('/login')->with('message', 'Your password has been changed');
-
     }
 }

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Membre;
+
+use Illuminate\Support\Facades\Auth;
+
+
 use App\Http\Requests\StoreMembreRequest;
 use App\Http\Requests\UpdateMembreRequest;
 
@@ -13,7 +17,6 @@ class MembreController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -37,7 +40,16 @@ class MembreController extends Controller
      */
     public function show(Membre $membre)
     {
-        //
+
+
+
+        if (auth::id() == $membre->user_id) {
+
+            return view('daret.show', compact('membre'));
+        } else {
+
+            return redirect()->to(route('my_daret'));
+        }
     }
 
     /**

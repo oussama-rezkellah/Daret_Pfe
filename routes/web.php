@@ -55,6 +55,7 @@ Route::post('/myDarets/add/{daret}',  [InvitationController::class, 'create'])->
 
 ////
 Route::get('/{daret}', [DemandeController::class, 'create'])->name('joindaret')->middleware('auth');
+route::get('/dem/{demande}', [DemandeController::class, 'destroy'])->name('destroydemanduser')->middleware('auth');
 ///
 Route::get('/myDaret/{daret}', [DemandeController::class, 'index'])->name('indexdemand')->middleware('auth');
 
@@ -67,3 +68,7 @@ route::get('/home/invitation/destroy/{invitation}', [InvitationController::class
 ///action demand
 route::get('/myDaret/acc/{daret}/{user}', [DemandeController::class, 'accept'])->name('acceptdemand')->middleware('auth');
 route::get('/myDaret/des/{demande}', [DemandeController::class, 'destroy'])->name('destroydemand')->middleware('auth');
+//
+Route::get('/myDaret/deleteuser/{membre}', [MembreController::class, 'destroy'])->name('deleteuser')->middleware('auth');
+
+Route::get('/myDaret/quituser/{membre}', [MembreController::class, 'quituser'])->name('quituser')->middleware('auth');

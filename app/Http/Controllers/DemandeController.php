@@ -49,7 +49,7 @@ class DemandeController extends Controller
                 'daret_id' => $daret->id,
             ]);
             if ($demande) {
-                return back()->with(['msj' => 'votre demande a ' . $daret->name . 'est envoyer']);
+                return back()->with(['msg' => 'votre demande a ' . $daret->name . 'est envoyer']);
             }
         }
     }
@@ -111,6 +111,6 @@ class DemandeController extends Controller
         $name = $demande->user->username;
         $demande->delete();
         //dd($name);
-        return back()->with('msg', 'demande de ' . $name . ' est supprimer ');
+        return back()->with('msg', 'demande est supprimer ');
     }
 }

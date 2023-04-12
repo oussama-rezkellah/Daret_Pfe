@@ -26,7 +26,7 @@ class DaretController extends Controller
                 ->where('user_id', $user->id);
         })->get();
 
-        return view('daret.home', compact('darets'));
+        return view('daret.home', compact('darets', 'user'));
     }
 
     /**

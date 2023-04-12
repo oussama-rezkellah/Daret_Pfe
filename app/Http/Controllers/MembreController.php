@@ -73,6 +73,32 @@ class MembreController extends Controller
      */
     public function destroy(Membre $membre)
     {
-        //
+        if ($membre->daret->etat == 0) {
+
+            $membre->delete();
+            return back()->with('msg', 'user deleted ');
+        } else {
+            return back()->withErrors('msg', 'impossible');
+        }
+    }
+
+
+
+    public function quituser(Membre $membre)
+    {
+        if ($membre->daret->etat == 0) {
+
+
+            if ($membre->role == "user") {
+                $daret = $membre->daret->name;
+                $membre->delete();
+
+                return redirect('/myDarets')->with('msg', 'you are quit ' . $daret);
+            } else {
+                return back()->withErrors('msg', 'impossible');
+            }
+        } else {
+            return back()->withErrors('msg', 'you are admin');
+        }
     }
 }

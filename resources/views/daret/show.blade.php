@@ -42,67 +42,19 @@
       <div class="col-md-12 newsfeed-right-side">
 
           <div class="row newsfeed-right-side-content mt-3">
-              <div class="col-md-2 newsfeed-left-side sticky-top shadow-sm" id="sidebar-wrapper">
-                  <div class="card newsfeed-user-card h-100">
-                      <ul class="list-group list-group-flush newsfeed-left-sidebar">
-                          <li class="list-group-item">
-                              <h6>Home</h6>
-                          </li>
-                        
-                          <li class="list-group-item d-flex justify-content-between align-items-center sd-active">
-                            <a href="groups.html" class="sidebar-item"><img
-                                    src="../images/icons/left-sidebar/group.png" alt="group"> Groups</a>
-                            <span class="badge badge-primary badge-pill">17</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <a href="" class="sidebar-item"><img
-                                    src="../images/icons/left-sidebar/event.png" alt="event"> Demands</a>
-                            <span class="badge badge-primary badge-pill">3</span>
-                        </li>
-                      
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <a href="{{route('indexinvit')}}" class="sidebar-item"><img
-                                    src="../images/icons/left-sidebar/find-friends.png" alt="find-friends">
-                                invitations</a>
-                            <span class="badge badge-primary badge-pill"><i
-                                    class='bx bx-chevron-right'></i></span>
-                        </li>
-                          
-                      </ul>
-                  </div>
-              </div>
+            @include('daret.ho')
               <div class="col-md-10 second-section" id="page-content-wrapper">
-                  <div class="mb-3">
-                      <div class="btn-group d-flex top-links-fg">
-                          <a href="{{route('my_daret')}}" class="btn btn-quick-links mr-3 ql-active">
-                              <img src="../images/icons/theme/group-white.png" class="mr-2"
-                                  alt="quick links icon">
-                              <span class="fs-8">Your Groups</span>
-                          </a>
-                          <a href="{{route('_daret')}}" class="btn btn-quick-links mr-3">
-                              <img src="../images/icons/theme/rocket.png" class="mr-2" alt="quick links icon">
-                              <span class="fs-8">Discover</span>
-                          </a>
-                          <a href="{{route('creer_daret')}}" class="btn btn-quick-links">
-                              <img src="../images/icons/theme/create.png" class="mr-2" alt="quick links icon">
-                              <span class="fs-8">Create</span>
-                          </a>
-                      </div>
-                  </div>
-
-                  <div class="jumbotron groups-banner">
-                      <div class="container group-banner-content">
-                          <h1 class="jumbotron-heading mt-auto"><img
-                                  src="../images/icons/theme/group-white.png" class="mr-3"
-                                  alt="Welcome to groups"> Daret</h1>
-                          <p>Get latest active from your groups.</p>
-                      </div>
-                  </div>
-
-
-
-
-                  
+                 
+                @include('daret.head')
+                @if ($membre->role =="user")
+                <a onclick="
+                if(confirm('Are you sure you want to quit {{$membre->daret->name}} ?'))
+                {
+                   window.location.href = '{{route('quituser', ['membre' => $membre])}}';
+                }
+                
+                "  href="#" class="btn btn-primary btn-quick-link border ">quit daret</a>
+                @endif
                
                   <div class="groups bg-white py-3 px-4 shadow-sm">
                       <div class="card-head d-flex justify-content-between">
@@ -203,19 +155,32 @@
                     <th>name</th>
                     <th>username</th>
                     <th>email</th>
-                    <td></td>
+                    <th>action</th>
                 </tr>
                 @foreach ($membre->daret->membre  as $key => $membre)
+                @if ($membre->role =="user")
+                    
+               
                 <tr>
                     <td>{{ $key + 1 }}</td>
                       
              <td>{{$membre->user->name}}</td>
              <td>{{$membre->user->username}}</td>
              <td>{{$membre->user->email}}</td>
-             <td></td>
-                </tr>
-                @endforeach
+             @if ($membre->daret->etat==0 && $membre->role =="admin" )
+             <td> <a onclick="
+                if(confirm('Are you sure you want to delete {{$membre->user->name}} ?'))
+                {
+                   window.location.href = '{{route('deleteuser', ['membre' => $membre])}}';
+                }
                 
+                "  href="#" class="btn btn-primary btn-quick-link border w-100">delete user</a></td>
+                   </tr>
+             @endif
+             
+                @endif
+                @endforeach
+               
                  </table>
                   
               </div>

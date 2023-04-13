@@ -119,35 +119,31 @@
                                   {{ session('msg') }}
                                   </div>
                                 @endif
-                            <form method="post" action="{{route('adduser',$membre->daret,)}}">
-                                @csrf
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" name="user" placeholder="usename or email">
-                                        <input type="submit" @if ($membre->daret->nbr_membre -$membre->daret->membre->count()==0)
-                                            class="btn btn-secondary btn-lg ml-5" disabled 
-                                              @else
-                                             class="btn btn-lg btn-primary ml-5" @endif value="add user"/>
+                           
+
+                            @if ($membre->daret->nbr_membre -$membre->daret->membre->count()!=0)
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addusermodal" data-whatever="@mdo">add user</button>
                             
-                                    </div>
-                                </div>
-                            </form>
+                            @endif
+
+                            
+
 
                              <button type="button" 
                              @if ($membre->daret->nbr_membre -$membre->daret->membre->count()!=0)
                                 class="btn btn-secondary btn-lg mr-5" disabled 
                                 @else
-                                 class="btn btn-lg btn-primary mr-5" @endif>lancer daret </button>
-                                
-                            
-                            
-                                 @endif
+                                 class="btn btn-lg btn-primary mr-5" @endif> lancer daret </button>
+                              @endif
                         </div>
                     </div>
                   </div>
+                  <br>
                   @if ($membre->role=='admin')
-                  <a href="{{route('indexdemand',$membre->daret)}}" class="btn btn-primary float-right">les demandes de {{$membre->daret->name}} </a>
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#demandesmodal" >les demandes de {{$membre->daret->name}}</button>
+                  {{-- <a href="{{route('indexdemand',$membre->daret)}}" class="btn btn-primary float-right"> </a> --}}
 @endif
+
                   <h3 class="text-center">les personnes </h3>
                  <table class="table">
                     <tr>
@@ -157,24 +153,26 @@
                     <th>email</th>
                     <th>action</th>
                 </tr>
-                @foreach ($membre->daret->membre  as $key => $membre)
-                @if ($membre->role =="user")
+                @foreach ($membre->daret->membre  as $key => $mem)
+                @if ($mem->role =="user")
                     
                
                 <tr>
                     <td>{{ $key + 1 }}</td>
                       
-             <td>{{$membre->user->name}}</td>
-             <td>{{$membre->user->username}}</td>
-             <td>{{$membre->user->email}}</td>
-             @if ($membre->daret->etat==0 && $membre->role =="admin" )
+             <td>{{$mem->user->name}}</td>
+             <td>{{$mem->user->username}}</td>
+             <td>{{$mem->user->email}}</td>
+             @if ($mem->daret->etat==0  && $membre->role =="admin" )
              <td> <a onclick="
-                if(confirm('Are you sure you want to delete {{$membre->user->name}} ?'))
+                if(confirm('Are you sure you want to delete {{$mem->user->name}} ?'))
                 {
-                   window.location.href = '{{route('deleteuser', ['membre' => $membre])}}';
+                   window.location.href = '{{route('deleteuser', ['membre' => $mem])}}';
                 }
                 
-                "  href="#" class="btn btn-primary btn-quick-link border w-100">delete user</a></td>
+                "  href="#" class="btn btn-danger bi bi-trash">delete</a>
+                <i class="bi bi-trash"></i>
+                </td>
                    </tr>
              @endif
              
@@ -212,3 +210,96 @@
 
 
 </body>
+
+
+
+
+@if ($membre->role=='admin')
+<div class="modal fade" id="addusermodal" tabindex="-1" role="dialog" aria-labelledby="addusermodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New user</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{{route('adduser',$membre->daret,)}}">
+            @csrf
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="user" placeholder="usename or email">
+
+                   
+                        
+                </div>
+            </div>
+     
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      
+        <input type="submit" @if ($membre->daret->nbr_membre -$membre->daret->membre->count()==0)
+        class="btn btn-secondary btn-lg ml-5" disabled 
+          @else
+         class="btn btn-lg btn-primary ml-5" @endif value="add user"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@endif
+
+
+@if ($membre->role=='admin')
+<div class="modal fade" id="demandesmodal" tabindex="-1" role="dialog" aria-labelledby="demandesmodal" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">List demands</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      
+        @if ($membre->daret->demandes->count()==0)
+        <h3 class="text-center">aucune demande</h3>
+      @else
+      <h3 class="text-center">les Demandes </h3>
+      <table class="table">
+         <tr>
+         <th>#</th>
+         <th>name</th>
+         <th>username</th>
+         <th>email</th>
+         <th colspan="2">action</th>
+        
+     </tr>
+   
+ 
+     @foreach ($membre->daret->demandes  as $key => $demande)
+     <tr>
+         <td>{{ $key + 1 }}</td>
+           
+  <td>{{$demande->user->name}}</td>
+  <td>{{$demande->user->username}}</td>
+  <td>{{$demande->user->email}}</td>
+  <td><a class="btn btn-primary" href="{{route('acceptdemand',[$membre->daret,$demande->user])}}">accepter</a></td>
+  <td><a class="btn btn-danger" href="{{route('destroydemand',[$demande])}}">supprimer</a></td>
+     </tr>
+     @endforeach
+     
+      </table>
+      @endif
+       
+      </div>
+      <div class="modal-footer">
+      
+      </div>
+    </div>
+  </div>
+</div>
+
+@endif

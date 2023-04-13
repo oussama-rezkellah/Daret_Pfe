@@ -3,10 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Membre;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -18,12 +19,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'last_name',
+        'first_name',
         'username',
         'email',
         'password',
         'code',
         'code_reset',
+        'image',
     ];
 
     /**
@@ -35,6 +38,36 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    /**
+     * Check if the user is an admin for the given daret
+     *
+     * @param integer $daretId
+     * @return boolean
+     */
+    public function isDaretAdmin($daretId)
+    {
+        $member = Membre::where('daret_id', $daretId)
+                        ->where('user_id', $this->id)
+                        ->where('role', 'admin')
+                        ->first();
+
+        return $member ? true : false;
+    }
+
+    /**
+     * Check if the user is a member of the given daret
+     *
+     * @param integer $daretId
+     * @return boolean
+     */
+    public function isMemberOfDaret($daretId)
+    {
+        $member = Membre::where('daret_id', $daretId)
+                        ->where('user_id', $this->id)
+                        ->first();
+
+        return $member ? true : false;
+    }
 
     /**
      * The attributes that should be cast.

@@ -26,5 +26,13 @@ class Membre extends Model
     {
         return $this->hasMany(Tour::class);
     }
-
+    protected $fillable = [
+        'daret_id',
+        'user_id',
+        'role',
+    ];
+    function getRouteKeyName()
+    {
+        return 'id';
+    }
 }

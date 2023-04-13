@@ -1,8 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DaretController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\MembreController;
+use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\DemandeController;
+use  App\Models\User;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +17,8 @@ use App\Http\Controllers\UserController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
 
 Route::get('/login', [UserController::class, 'login'])->middleware('guest')->name('login');
 
@@ -53,6 +59,35 @@ Route::get('/check-username', [UserController::class, 'checkUsername']);
 
 Route::get('/checkemail', [UserController::class, 'checkemail']);
 
-Route::get('/', function () {
-    return view('home');
-})->middleware('auth');;
+////
+Route::get('/cree', [DaretController::class, 'create'])->name('creer_daret')->middleware('auth');
+Route::post('/create', [DaretController::class, 'store'])->name('store')->middleware('auth');
+Route::get('/myDarets', [DaretController::class, 'daret'])->name('my_daret')->middleware('auth');
+
+Route::get('/', [DaretController::class, 'index'])->name('_daret')->middleware('auth');
+
+
+Route::get('/myDarets/{membre}', [MembreController::class, 'show'])->name('show')->middleware('auth');
+
+///
+Route::post('/myDarets/add/{daret}',  [InvitationController::class, 'create'])->name('adduser')->middleware('auth');
+
+////
+Route::get('/{daret}', [DemandeController::class, 'create'])->name('joindaret')->middleware('auth');
+route::get('/dem/{demande}', [DemandeController::class, 'destroy'])->name('destroydemanduser')->middleware('auth');
+///
+Route::get('/myDaret/{daret}', [DemandeController::class, 'index'])->name('indexdemand')->middleware('auth');
+
+route::get('/home/invitation', [InvitationController::class, 'index'])->name('indexinvit')->middleware('auth');
+
+///action invit
+route::get('/home/invitation/accept/{invitation}', [InvitationController::class, 'accept'])->name('acceptinvit')->middleware('auth');
+route::get('/home/invitation/destroy/{invitation}', [InvitationController::class, 'destroy'])->name('destroyinvit')->middleware('auth');
+
+///action demand
+route::get('/myDaret/acc/{daret}/{user}', [DemandeController::class, 'accept'])->name('acceptdemand')->middleware('auth');
+route::get('/myDaret/des/{demande}', [DemandeController::class, 'destroy'])->name('destroydemand')->middleware('auth');
+//
+Route::get('/myDaret/deleteuser/{membre}', [MembreController::class, 'destroy'])->name('deleteuser')->middleware('auth');
+
+Route::get('/myDaret/quituser/{membre}', [MembreController::class, 'quituser'])->name('quituser')->middleware('auth');

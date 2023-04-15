@@ -15,69 +15,79 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function login(){
+    public function login()
+    {
         return view('users.login');
     }
-    public function register(){
+    public function register()
+    {
         return view('users.register');
     }
-    public function forgetform(){
+    public function forgetform()
+    {
         return view('users.forget');
     }
-    public function settingform(){
-        $user = auth()->user();
-        return view('settings.setting' , ['user' => $user]);
+    public function settingform()
+    {
+        //     $user = auth()->user();
+        //     return view('settings.setting', ['user' => $user]);
     }
-    public function contactform(){
+    public function contactform()
+    {
         $user = auth()->user();
-        return view('settings.setting-contact' , ['user' => $user]);
+        return view('settings.setting-contact', ['user' => $user]);
     }
-    public function passwordform(){
+    public function passwordform()
+    {
         $user = auth()->user();
-        return view('settings.setting-password' , ['user' => $user]);
+        return view('settings.setting-password', ['user' => $user]);
     }
-    public function imageupdate(){
+    public function imageupdate()
+    {
         $user = auth()->user();
         $formFields['image'] = request()->file('image')->store('public/images/users', 'public');
-        $user->image = $formFields['image'] ;
+        $user->image = $formFields['image'];
         $user->save();
         return back()->with('message', 'Profile updated successfully!');
     }
-    public function contactupdate(){
+    public function contactupdate()
+    {
         $user = Auth::user();
-        $formFields=request()->validate([
+        $formFields = request()->validate([
             'password' => ['required', new MatchOldPassword],
-            'email' => ['required', 'email', Rule::unique('users', 'email')],]);
-            
-            $user->code = bcrypt(rand());
-            $user->email = $formFields['email'];
-            $user->save();
+            'email' => ['required', 'email', Rule::unique('users', 'email')],
+        ]);
 
-            Mail::to($user->email)->send(new VerificationMail($user->id,$user->code));
-            auth()->logout();
+        $user->code = bcrypt(rand());
+        $user->email = $formFields['email'];
+        $user->save();
 
-            request()->session()->invalidate();
-            request()->session()->regenerateToken();
+        Mail::to($user->email)->send(new VerificationMail($user->id, $user->code));
+        auth()->logout();
 
-            return redirect('/login')->with('message', 'We have sent a verification email');  
-        
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect('/login')->with('message', 'We have sent a verification email');
     }
-    public function passwordupdate(){
-        
-    $user = Auth::user();
+    public function passwordupdate()
+    {
 
-    $formFields=request()->validate([
-        'old_password' => ['required', new MatchOldPassword],
-        'password' => ['required', 'string', 'min:6', 'confirmed'],
-    ]);
+        $user = Auth::user();
 
-    $user->password = bcrypt($formFields['password']);
-    $user->save();
+        $formFields = request()->validate([
+            'old_password' => ['required', new MatchOldPassword],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ]);
 
-    return redirect()->back()->with('message', 'Password changed successfully.');
+        $user->password = bcrypt($formFields['password']);
+        $user->save();
+
+        return redirect()->back()->with('message', 'Password changed successfully.');
     }
 
-    public function settingupdate(){
+    public function settingupdate()
+    {
         $formFields = request()->validate([
             'last_name' => ['required', 'min:3'],
             'first_name' => ['required', 'min:3'],
@@ -86,22 +96,24 @@ class UserController extends Controller
         auth()->user()->update($formFields);
         return back()->with('message', 'Your account updated successfully!');
     }
-    
 
-    public function resetform(Request $request){
+
+    public function resetform(Request $request)
+    {
         $resetCode = $request->input('reset');
         $userId = $request->input('id');
         $user = User::find($userId);
         if (!$user) {
             abort(404, 'user not found');
         }
-        if ($user->code_reset !== $resetCode ) {
+        if ($user->code_reset !== $resetCode) {
             abort(404, 'user not found');
         }
 
-        return view('users.reset' , ['id' => $userId ]);
+        return view('users.reset', ['id' => $userId]);
     }
-    public function store(){
+    public function store()
+    {
         $formFields = request()->validate([
             'last_name' => ['required', 'min:3'],
             'first_name' => ['required', 'min:3'],
@@ -114,30 +126,31 @@ class UserController extends Controller
         $formFields['code'] = bcrypt(rand());
         $user = User::create($formFields);
 
-        Mail::to($user->email)->send(new VerificationMail($user->id,$user->code));
+        Mail::to($user->email)->send(new VerificationMail($user->id, $user->code));
 
-        return redirect('/login')->with('message', 'We have sent a verification email');    
+        return redirect('/login')->with('message', 'We have sent a verification email');
     }
-    public function auth(){
+    public function auth()
+    {
         $formFields = request()->validate([
             'login' => 'required',
             'password' => 'required'
         ]);
         $fieldType = filter_var($formFields['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $user = User::where(function($query) use ($formFields) {
+        $user = User::where(function ($query) use ($formFields) {
             $query->where('email', $formFields['login'])
-                  ->orWhere('username', $formFields['login']);
+                ->orWhere('username', $formFields['login']);
         })->first();
-        
+
         if (!$user) {
             return back()->withErrors(['login' => 'Invalid Credentials'])->onlyInput('login');
         }
-        
+
         if ($user->code !== null) {
             return back()->with('message', 'Your account is not verified. Please verify your email.');
         }
-        if(auth()->attempt([$fieldType => $formFields['login'], 'password' => $formFields['password']])) {
+        if (auth()->attempt([$fieldType => $formFields['login'], 'password' => $formFields['password']])) {
             request()->session()->regenerate();
 
             return redirect('/')->with('message', 'You are now logged in!');
@@ -145,8 +158,9 @@ class UserController extends Controller
 
         return back()->withErrors(['login' => 'Invalid Credentials'])->onlyInput('login');
     }
-    
-    public function logout(){
+
+    public function logout()
+    {
         auth()->logout();
 
         request()->session()->invalidate();
@@ -176,7 +190,8 @@ class UserController extends Controller
             return redirect('/login')->with('error', 'Invalid verification link.');
         }
     }
-    public function forget(){
+    public function forget()
+    {
         $formFields = request()->validate([
             'email' => ['required', 'email']
         ]);
@@ -187,57 +202,56 @@ class UserController extends Controller
         $formFields['code_reset'] = bcrypt(rand());
         $user->code_reset = $formFields['code_reset'];
         $user->save();
-        Mail::to($user->email)->send(new ResetMail($user->id,$user->code_reset));
+        Mail::to($user->email)->send(new ResetMail($user->id, $user->code_reset));
 
         return redirect('/login')->with('message', 'We have sent a reset email');
-        
     }
-    public function reset(){
+    public function reset()
+    {
         $formFields = request()->validate([
             'password' => 'required|confirmed|min:6'
         ]);
         $formFields['id'] = request()->id;
         $user = User::find($formFields['id']);
         if (!$user) {
-            abort(404, 'user not found');        
+            abort(404, 'user not found');
         }
         $formFields['password'] = bcrypt($formFields['password']);
         $user->code_reset = null;
         $user->password = $formFields['password'];
         $user->save();
         return redirect('/login')->with('message', 'Your password has been changed');
-
     }
     public function checkUsername(Request $request)
-{
-    $username = $request->input('username');
+    {
+        $username = $request->input('username');
 
-    $user = User::where('username', $username)->first();
+        $user = User::where('username', $username)->first();
 
-    if ($user) {
-        if ($user->id == auth()->user()->id) {
-            return response()->json(['status' => 'same']);
+        if ($user) {
+            if ($user->id == auth()->user()->id) {
+                return response()->json(['status' => 'same']);
+            } else {
+                return response()->json(['status' => 'unavailable']);
+            }
         } else {
-            return response()->json(['status' => 'unavailable']);
+            return response()->json(['status' => 'available']);
         }
-    } else {
-        return response()->json(['status' => 'available']);
     }
-}
-public function checkemail(Request $request)
-{
-    $email = $request->input('email');
+    public function checkemail(Request $request)
+    {
+        $email = $request->input('email');
 
-    $user = User::where('email', $email)->first();
+        $user = User::where('email', $email)->first();
 
-    if ($user) {
-        if ($user->id == auth()->user()->id) {
-            return response()->json(['status' => 'same']);
+        if ($user) {
+            if ($user->id == auth()->user()->id) {
+                return response()->json(['status' => 'same']);
+            } else {
+                return response()->json(['status' => 'unavailable']);
+            }
         } else {
-            return response()->json(['status' => 'unavailable']);
+            return response()->json(['status' => 'available']);
         }
-    } else {
-        return response()->json(['status' => 'available']);
     }
-}
 }

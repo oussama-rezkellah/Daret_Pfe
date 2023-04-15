@@ -26,7 +26,7 @@
     <div class="container-fluid newsfeed d-flex" id="wrapper">
         <div class="row newsfeed-size f-width">
             <div class="col-md-12 message-right-side">
-                @include('partials.nav')
+                @include('partials2.nav')
                 <div class="row message-right-side-content">
                     <div class="col-md-12">
                         <div id="message-frame">

@@ -16,4 +16,9 @@ class Demande extends Model
     {
         return $this->belongsTo(Daret::class);
     }
+    protected $fillable = [
+
+        'user_id',
+        'daret_id'
+    ];
 }

@@ -20,55 +20,54 @@
     <link href="../css/settings.css" rel="stylesheet">
     <link href="../css/forms.css" rel="stylesheet">
     <link href="../css/media.css" rel="stylesheet">
-    <style>
-        .profile-picture {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto;
-  border-radius: 50%;
-  overflow: hidden;
-}
-
-.profile-picture img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.profile-picture form {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  padding: 10px;
-  background-color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-  display: none;
-}
-
-.profile-picture form button {
-  margin-top: 10px;
-  display: none;
-}
-
-.profile-picture form input[type="file"] {
-  display: none;
-}
-
-
-.profile-picture:hover .edit-icon {
-    visibility: visible;
-}
-    </style>
+  <style>.profile-picture {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    }
+  
+    .profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+      }
+  
+  .profile-picture form {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    display: none;
+      }
+  
+  .profile-picture form button {
+    margin-top: 10px;
+    display: none;
+     }
+  
+  .profile-picture form input[type="file"] {
+    display: none;
+     }
+  
+  
+  .profile-picture:hover .edit-icon {
+      visibility: visible;
+   }
+</style>
 </head>
 
 <body class="messenger">
     <div class="container-fluid newsfeed d-flex" id="wrapper">
         <div class="row newsfeed-size f-width">
             <div class="col-md-12 message-right-side">
-                @include('partials.nav')
+                @include('partials2.nav')
                 <div class="row message-right-side-content">
                     <div class="col-md-12">
                         <div id="message-frame">

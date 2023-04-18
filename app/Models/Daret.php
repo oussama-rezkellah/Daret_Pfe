@@ -16,11 +16,27 @@ class Daret extends Model
     }
     function demandes()
     {
-        return $this->hasMany(demande::class);
+        return $this->hasMany(Demande::class);
     }
-    function membres()
+    public function membre()
     {
-        return $this->hasMany(membre::class);
+        return $this->hasMany(Membre::class);
     }
 
+    protected $fillable = [
+        'name',
+        'montant',
+        'type_ordre',
+        'type_periode',
+        'nbr_tour',
+        'etat',
+        'nbr_membre',
+        'date_start',
+        'date_final',
+        'periode_ac'
+    ];
+    function getRouteKeyName()
+    {
+        return 'id'; //by dauflt id or email... 
+    }
 }

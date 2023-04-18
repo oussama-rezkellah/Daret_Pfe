@@ -2,9 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use  App\Http\Controllers\DaretController;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Invitation;
 use App\Http\Requests\StoreInvitationRequest;
 use App\Http\Requests\UpdateInvitationRequest;
+use App\Models\Daret;
+use App\Models\Demande;
+use App\Models\Membre;
+use App\Models\User;
+use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 
 class InvitationController extends Controller
 {
@@ -13,17 +21,71 @@ class InvitationController extends Controller
      */
     public function index()
     {
-        //
+        $invitation = auth::user()->invitations;
+
+        return view('daret.invitation', compact('invitation'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Daret $daret)
     {
-        //
-    }
+        $form = request()->validate([
+            'user' => 'required',
+        ]);
 
+
+        $user = User::where(function ($query) use ($form) {
+            $query->where('email', $form['user'])
+                ->orWhere('username', $form['user']);
+        })->first();
+
+        $check_membre = false;
+        if ($daret->membre->count() == $daret->nbr_membre) {
+
+            return back()->withErrors(['message' => 'daret  pleine.']);
+        }
+
+        if (!$user) {
+            return back()->withErrors(['message' => 'email or user name incorrect.']);
+        }
+
+        foreach ($daret->membre as $membre) {
+
+            if ($membre->user_id == $user->id) {
+                $check_membre = true;
+            }
+        }
+        if ($check_membre) {
+            return back()->withErrors(['message' => 'deja existe.']);
+        }
+
+
+        foreach ($daret->invitations as $invitations) {
+
+            if ($invitations->user_id == $user->id) {
+                return back()->withErrors(['message' => 'deja envoi invitation a .' . $user->name]);
+            }
+        }
+
+        foreach ($daret->demandes as $demandes) {
+
+            if ($demandes->user_id == $user->id) {
+                return back()->withErrors(['message' => 'velluer de consuler la table des demandes.']);
+            }
+        }
+
+        if (!$check_membre) {
+            $invit = Invitation::create([
+
+                'user_id' =>   $user->id,
+                'daret_id' => $daret->id
+
+            ]);
+            return back()->with(['msg' => 'l inviation est envoyer']);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -35,10 +97,7 @@ class InvitationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Invitation $invitation)
-    {
-        //
-    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -59,8 +118,34 @@ class InvitationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
+    public function accept(Invitation $invitation)
+    {
+
+
+        $check = DaretController::adduser($invitation->daret,  auth::user());
+        // echo $check;
+        if ($check == 1) {
+            return back()->with('msg', 'Daret is full');
+        }
+
+        if ($check == 2) {
+            return back()->with('msg', 'already existe');
+        }
+
+        if ($check == null) {
+            return back()->with('msg', 'add well');
+        }
+
+
+        // echo  $check;
+    }
     public function destroy(Invitation $invitation)
     {
-        //
+
+        $name = $invitation->daret->name;
+        $invitation->delete();
+
+        return redirect()->route('indexinvit')->with('msg', 'invitation from daret ' . $name . ' is deleted');
     }
 }

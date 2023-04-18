@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('type_ordre');
             $table->string('type_periode');
+            $table->integer('periode_ac');
             $table->string('name');
-            $table->date('date_start');
-            $table->date('date_final');
+            $table->date('date_start')->nullable();
+            $table->date('date_final')->nullable();
             $table->double('montant');
             $table->integer('nbr_tour');
             $table->integer('nbr_membre');

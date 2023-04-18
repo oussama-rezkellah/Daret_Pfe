@@ -13,4 +13,10 @@ class Tour extends Model
         return $this->belongsTo(Membre::class);
     }
 
+    protected $fillable = [
+        'membre_id',
+        'etat',
+        'nbr',
+
+    ];
 }

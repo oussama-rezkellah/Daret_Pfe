@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('membre_id')->nullable();
 
-            $table->integer('nbr');
+            $table->integer('nbr')->nullable();
             $table->string('etat');
             $table->timestamps();
             $table->foreign('membre_id')->references('id')->on('membres')->onDelete('cascade');

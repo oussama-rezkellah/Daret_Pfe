@@ -43,9 +43,14 @@ class NotificationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Notification $notification)
+    public function read()
     {
-        //
+        $notifications = $notifications = Auth::user()->notifications();
+        foreach ($notifications as $notification ) {
+            $notification->read = "read";
+           $notification->save(); 
+           return redirect('/');
+        }
     }
 
     /**

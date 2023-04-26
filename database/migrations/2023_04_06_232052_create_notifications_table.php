@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
-
+            $table->unsignedBigInteger('daret_id')->nullable();
             $table->text("content");
-
-
+            $table->string("read")->default("unread");
             $table->timestamps();
+            $table->foreign('daret_id')->references('id')->on('darets')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

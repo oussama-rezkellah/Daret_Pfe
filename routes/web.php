@@ -1,12 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DaretController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\MembreController;
-use App\Http\Controllers\InvitationController;
-use App\Http\Controllers\DemandeController;
 use  App\Models\User;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DaretController;
+use App\Http\Controllers\MembreController;
+use App\Http\Controllers\DemandeController;
+use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\NotificationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -95,6 +96,8 @@ Route::get('/setting/password', [UserController::class, 'passwordform'])->middle
 Route::put('/setting/password', [UserController::class, 'passwordupdate'])->middleware('auth');
 
 Route::put('/setting/contact', [UserController::class, 'contactupdate'])->middleware('auth');
+
+Route::put('/notification/read', [NotificationController::class, 'read'])->middleware('auth');
 
 Route::post('/profileupdate', [UserController::class, 'imageupdate'])->middleware('auth');
 

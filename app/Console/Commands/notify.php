@@ -46,14 +46,18 @@ class notify extends Command
         $tour = Tour::where('membre_id', $member->id)->where('tour', $daret->curent_tour)->get();
         if($tour->etat == "not_taked"){
                 Notification::create([
-                'user_id' => $member->user_id,
-                'contenu' => 'Congrats it s your turn',
+                'user_id' => $member->user_id,                
+                'daret_id' => $member->daret_id,
+
+                'content' => 'Congrats it s your turn',
                 // ...
                             ]);}
         else if($tour->etat == "not_payed"){
             Notification::create([
                 'user_id' => $member->user_id,
-                'contenu' => 'It s time to pay',
+                'daret_id' => $member->daret_id,
+
+                'content' => 'It s time to pay',
                 // ...
                             ]);}					
 
@@ -85,13 +89,16 @@ class notify extends Command
         if($tour->etat == "not_taked"){
                 Notification::create([
                 'user_id' => $member->user_id,
-                'contenu' => 'Congrats it s your turn',
+                'daret_id' => $member->daret_id,
+
+                'content' => 'Congrats it s your turn',
                 // ...
                             ]);}
         else if($tour->etat == "not_payed"){
             Notification::create([
                 'user_id' => $member->user_id,
-                'contenu' => 'It s time to pay',
+                'daret_id' => $member->daret_id,
+                'content' => 'It s time to pay',
                 // ...
                             ]);}					
 

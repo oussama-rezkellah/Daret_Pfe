@@ -1,3 +1,7 @@
+@php
+  $notifications = Auth::user()->notifications()->latest()->take(3)->get();
+  $unread = Auth::user()->notifications()->where('read', '=', 'unread')->count();
+@endphp
 <nav id="navbar-main" class="navbar navbar-expand-lg shadow-sm sticky-top">
     <div class="w-100 justify-content-md-center">
         <ul class="nav navbar-nav enable-mobile px-2">
@@ -212,15 +216,15 @@
                     data-toggle="dropdown" data-placement="bottom" data-title="Notifications"
                     role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="images/icons/navbar/notification.png" class="notification-bell"
-                        alt="navbar icon"> <span class="badge badge-pill badge-primary">3</span>
+                        alt="navbar icon"> <span class="badge badge-pill badge-primary">{{ $unread }}</span>
                 </a>
                 <ul class="dropdown-menu notify-drop dropdown-menu-right nav-drop shadow-sm">
                     <div class="notify-drop-title">
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Notifications <span
-                                    class="badge badge-pill badge-primary ml-2">3</span></div>
+                                    class="badge badge-pill badge-primary ml-2">{{ $unread }}</span></div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                <a href="#" class="notify-right-icon">
+                                <a href="/notification/read" class="notify-right-icon">
                                     Mark All as Read
                                 </a>
                             </div>
@@ -229,127 +233,19 @@
                     <!-- end notify title -->
                     <!-- notify content -->
                     <div class="drop-content">
+                        @foreach ($notifications as $notification)
                         <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="images/users/user-10.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
                             <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Sean</a> <span
-                                    class="notification-type">replied to your comment on a post in
-                                </span><a href="#" class="notification-for">PHP</a>
+                                <a href="#" class="notification-user">{{ $notification->user()->name }}</a> <span
+                                    class="notification-type">{{ $notification->content }}
+                                </span><a href="{{route('show',$notification->daret())}}" class="notification-for">{{ $notification->daret()->name }}</a>
                                 <a href="#" class="notify-right-icon">
                                     <i class='bx bx-radio-circle-marked'></i>
                                 </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-group'></i></span> 3h
-                                </p>
+                                
                             </div>
                         </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="images/users/user-7.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Kimberly</a> <span
-                                    class="notification-type">likes your comment "I would really...
-                                </span>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-like'></i></span> 7h
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="images/users/user-8.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <span class="notification-type">10 people saw your story before it
-                                    disappeared. See who saw it.</span>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bx-images'></i></span> 23h
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="images/users/user-11.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Michelle</a> <span
-                                    class="notification-type">posted in </span><a href="#"
-                                    class="notification-for">Argon Social Design System</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-quote-right'></i></span> 1d
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="images/users/user-5.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Karen</a> <span
-                                    class="notification-type">likes your comment "Sure, here... </span>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-like'></i></span> 2d
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="images/users/user-12.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Irwin</a> <span
-                                    class="notification-type">posted in </span><a href="#"
-                                    class="notification-for">Themeforest</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-quote-right'></i></span> 3d
-                                </p>
-                            </div>
-                        </li>
-                    </div>
-                    <div class="notify-drop-footer text-center">
-                        <a href="#">See More</a>
+                        @endforeach
                     </div>
                 </ul>
             </li>

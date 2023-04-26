@@ -236,7 +236,7 @@
                         @foreach ($notifications as $notification)
                         <li>
                             <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">{{ $notification->user()->name }}</a> <span
+                                <a href="#" class="notification-user">{{ $notification->user()->first_name }}</a> <span
                                     class="notification-type">{{ $notification->content }}
                                 </span><a href="{{route('show',$notification->daret())}}" class="notification-for">{{ $notification->daret()->name }}</a>
                                 <a href="#" class="notify-right-icon">

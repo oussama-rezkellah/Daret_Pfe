@@ -19,6 +19,7 @@
     <link href="css/components.css" rel="stylesheet">
     <link href="css/media.css" rel="stylesheet">
     <script src="js/load.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -30,6 +31,7 @@
 <div class="container-fluid" id="wrapper">
   <div class="row newsfeed-size">
       <div class="col-md-12 newsfeed-right-side">
+     
 
           <div class="row newsfeed-right-side-content mt-3">
             @include('daret.ho')
@@ -50,6 +52,7 @@
               {{ session('msg') }}
               </div>
             @endif
+           
                   <div class="groups bg-white py-3 px-4 shadow-sm">
                       <div class="card-head d-flex justify-content-between">
                           <h5 class="mb-4">Suggested Groups</h5>
@@ -91,14 +94,23 @@
                                         @else
                                             
                                                   @if ($daret->demandes->count()!=0)
-                                                     @foreach ($daret->demandes as $demande)
-                                                  
-                                                        @if ($demande->user->id==$user->id)
-                                                          <a href="{{route('destroydemanduser',$demande)}}" class="btn btn-light btn-quick-link border w-100">cancel request</a>
-                                                          @elseif($demande->user->id!=$user->id )
-                                                        <a  href="{{route('joindaret',$daret)}}" class="btn btn-primary btn-quick-link border w-100">Join</a>
-                                                        @endif
-                                                      @endforeach
+                                                  @php
+                                                  $userRequested = false;
+                                                @endphp
+                                                
+                                                @foreach ($daret->demandes as $demande)
+                                                  @if ($demande->user->id == $user->id)
+                                                    @php
+                                                      $userRequested = true;
+                                                    @endphp
+                                                    <a href="{{ route('destroydemanduser', $demande) }}" class="btn btn-light btn-quick-link border w-100">Cancel request</a>
+                                                    @break
+                                                  @endif
+                                                @endforeach
+                                                
+                                                @if (!$userRequested)
+                                                  <a href="{{ route('joindaret', $daret) }}" class="btn btn-primary btn-quick-link border w-100">Join</a>
+                                                @endif
                                                     
 
 
@@ -141,7 +153,6 @@
     </script>
     <script src="js/app.js"></script>
     <script src="js/components/components.js"></script>
-
 
 
 

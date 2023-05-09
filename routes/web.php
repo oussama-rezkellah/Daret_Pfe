@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use  App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -80,7 +81,7 @@ Route::post('/myDaret/tours/{membre}', [DaretController::class, 'tours'])->name(
 Route::get('/myDaret/toursrandom/{membre}', [DaretController::class, 'toursrandom'])->name('toursrandom')->middleware('auth');
 
 Route::get('/myDaret/delete/{daret}', [DaretController::class, 'destroy'])->name('destroy')->middleware('auth');
-Route::get('/myDaret/updatetour/{membre}', [DaretController::class, 'updatetour'])->name('updatetour')->middleware('auth');
+Route::get('/myDaret/updatetour/{tour}', [DaretController::class, 'updatetour'])->name('updatetour')->middleware('auth');
 Route::get('/myDaret/updatetourtake/{tour}/{membre}', [DaretController::class, 'updatetourtake'])->name('updatetourtake')->middleware('auth');
 
 /////////
@@ -105,3 +106,15 @@ Route::post('/profileupdate', [UserController::class, 'imageupdate'])->middlewar
 Route::get('/check-username', [UserController::class, 'checkUsername']);
 
 Route::get('/checkemail', [UserController::class, 'checkemail']);
+Route::get('/userser/{query}', [Controller::class, 'recherche']);
+
+Route::get('/admin/darets', [AdminController::class, 'index'])->name('darets');
+Route::get('/admin/daret0', [AdminController::class, 'index'])->name('daret0');
+Route::get('/admin/daretl', [AdminController::class, 'index'])->name('daretl');
+Route::get('/admin/daretf', [AdminController::class, 'index'])->name('daretf');
+Route::get('/admin/users', [AdminController::class, 'index'])->name('users');
+Route::post('/admin/create', [AdminController::class, 'createDaret'])->name('createDaret');
+Route::get('/admin/{daret}/', [AdminController::class, 'showdaret'])->name('daret');
+Route::get('/admin/{daret}/start', [AdminController::class, 'startdaret'])->name('startA');
+Route::get('/admin/{daret}/toursrandomA', [AdminController::class, 'toursrandomA'])->name('toursrandomA');
+Route::get('/admin/{daret}/toursmanuallyA', [AdminController::class, 'toursmanuallyA'])->name('toursmanuallyA');

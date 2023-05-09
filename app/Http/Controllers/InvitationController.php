@@ -32,23 +32,23 @@ class InvitationController extends Controller
     public function create(Daret $daret)
     {
         $form = request()->validate([
-            'user' => 'required',
+            'search' => 'required',
         ]);
 
 
         $user = User::where(function ($query) use ($form) {
-            $query->where('email', $form['user'])
-                ->orWhere('username', $form['user']);
+            $query->where('email', $form['search'])
+                ->orWhere('username', $form['search']);
         })->first();
 
         $check_membre = false;
         if ($daret->membre->count() == $daret->nbr_membre) {
 
-            return back()->withErrors(['message' => 'daret  pleine.']);
+            return back()->withErrors(['message' => 'daret is full.s']);
         }
 
         if (!$user) {
-            return back()->withErrors(['message' => 'email or user name incorrect.']);
+            return back()->withErrors(['message' => 'email or username incorrect.']);
         }
 
         foreach ($daret->membre as $membre) {
@@ -58,21 +58,21 @@ class InvitationController extends Controller
             }
         }
         if ($check_membre) {
-            return back()->withErrors(['message' => 'deja existe.']);
+            return back()->withErrors(['message' => 'already exist.']);
         }
 
 
         foreach ($daret->invitations as $invitations) {
 
             if ($invitations->user_id == $user->id) {
-                return back()->withErrors(['message' => 'deja envoi invitation a .' . $user->name]);
+                return back()->withErrors(['message' => 'already sent invitation to.' . $user->name]);
             }
         }
 
         foreach ($daret->demandes as $demandes) {
 
             if ($demandes->user_id == $user->id) {
-                return back()->withErrors(['message' => 'velluer de consuler la table des demandes.']);
+                return back()->withErrors(['message' => 'be sure to consult the table of requests.']);
             }
         }
 
@@ -83,7 +83,7 @@ class InvitationController extends Controller
                 'daret_id' => $daret->id
 
             ]);
-            return back()->with(['msg' => 'l inviation est envoyer']);
+            return back()->with(['msg' => 'the invitation is sent']);
         }
     }
     /**

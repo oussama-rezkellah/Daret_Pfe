@@ -10,8 +10,10 @@ use App\Http\Requests\StoreDaretRequest;
 use App\Http\Requests\UpdateDaretRequest;
 use App\Models\Tour;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -73,6 +75,7 @@ class DaretController extends Controller
             'type_ordre' => $request->type_order,
             'type_periode' => $request->type_periode,
             'nbr_tour' => $request->nbr_per,
+
             'etat' => 0,
             'periode_ac' => 0,
 
@@ -83,6 +86,7 @@ class DaretController extends Controller
             'role' => 'admin',
             'user_id' => Auth::id(),
         ]);
+
         return redirect()->route('my_daret', Auth::id())->with('success', 'your daret successfully added ');
     }
 
@@ -147,7 +151,7 @@ class DaretController extends Controller
             $selects[$key] = $request->input($name);
 
             if ($selects[$key] == null) {
-                return redirect()->route('show', $membre)->with('msgerror', 'select');
+                return redirect()->back()->with('msgerror', 'select');
             }
         }
 
@@ -181,7 +185,7 @@ class DaretController extends Controller
             }
         }
         return
-            redirect()->route('show', $membre)->with('msg', 'your tours successfully added');
+            redirect()->back()->with('msg', 'your tours successfully added');
     }
     function toursrandom(Membre $membre)
     {
@@ -231,79 +235,43 @@ class DaretController extends Controller
                 'etat' => 1,
             ]);
 
+            if ($membre->daret->type_periode == 'week') {
 
-            // Run the schedule:work command asynchronously
-            pclose(popen('start /B php ' . base_path('artisan') . ' schedule:work', 'r'));
+                $date_finale = Carbon::now()->addWeeks($membre->daret->nbr_tour);
+            } else {
+
+                $date_finale = Carbon::now()->addMonths($membre->daret->nbr_tour);
+            }
+            $membre->daret->date_final = $date_finale;
         }
-
+        $membre->daret->save();
         return redirect()->route('show', $membre)->with('msg', 'your daret successfully started');
     }
-    function updatetour(Membre $membre)
-
+    function updatetour(Tour $tour)
     {
-        foreach ($membre->tours as $tour) {
-            if ($membre->daret->periode_ac == $tour->nbr) {
-
-                $tour->update([
-
-                    'etat' => 'payed',
-                ]);
-                echo  $tour->etat;
-            }
-        }
-        // Run the schedule:work command in the background using nohup
-        $command = 'nohup php ' . base_path('artisan') . ' schedule:work > /dev/null 2>&1 &';
-        exec($command);
+        $tour->etat = 'payed';
+        $tour->save();
+        return back();
     }
     function updatetourtake(Tour $tour, Membre $membre)
     {
-        $tour->update([
-            'etat' => 'taked',
-        ]);
-        return  back();
+
+        $t = DB::table('tours')
+            ->where('nbr', '=',  $membre->daret->curent_tour)
+            ->where('etat', '=', 'not_payed')
+            ->first();
+
+        if (!$t) {
+            $tour->update([
+                'etat' => 'taked',
+            ]);
+            $tour->save();
+            return  back();
+        } elseif ($t) {
+            return back()->withErrors(['msg' => 'error not payed']);
+        }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function show(Daret $daret)
-    {
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Daret $daret)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateDaretRequest $request, Daret $daret)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Daret $daret)
     {
         $name = $daret->name;
@@ -311,6 +279,6 @@ class DaretController extends Controller
         $daret->delete();
 
 
-        return redirect()->route('my_daret')->with('msg', 'your Daret ' . $name . ' has been deleted');
+        return redirect()->back()->with('msg', 'your Daret ' . $name . ' has been deleted');
     }
 }

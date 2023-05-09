@@ -2,6 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Daret;
+use App\Models\Notification;
+use App\Models\Tour;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class notify extends Command
@@ -25,88 +29,85 @@ class notify extends Command
      */
     public function handle()
     {
-        $darets = Daret::where('type', 'week')->get();
+        $darets = Daret::where('type_periode', 'week')->get();
 
         foreach ($darets as $daret) {
             $now = Carbon::now();
             $FinalDate = Carbon::parse($daret->date_final);
-            if($now->equalTo($FinalDate)){
+            if ($now->equalTo($FinalDate)) {
                 $daret->etat = 2;
-            
-    }else{
-        if($daret->etat == 1){
-        // Create monthly notifications
-        $notifyDate = Carbon::parse($daret->date_last);
-        $now = Carbon::now();
-    if ($notifyDate->diffInWeeks($now) >= 1){
-        $daret->date_last=now();
-        $daret->curent_tour++;
-        $daret->save();
-    foreach ($daret->membres() as $member){
-        $tour = Tour::where('membre_id', $member->id)->where('tour', $daret->curent_tour)->get();
-        if($tour->etat == "not_taked"){
-                Notification::create([
-                'user_id' => $member->user_id,                
-                'daret_id' => $member->daret_id,
+            } else {
+                if ($daret->etat == 1) {
+                    // Create monthly notifications
+                    $notifyDate = Carbon::parse($daret->date_last);
+                    $now = Carbon::now();
+                    if ($notifyDate->diffInWeeks($now) >= 1) {
+                        $daret->date_last = now();
+                        $daret->curent_tour++;
+                        $daret->save();
+                        foreach ($daret->membre as $memb) {
+                            $tour = Tour::where('membre_id', $memb->id)->where('tour', $daret->curent_tour)->get();
+                            if ($tour->etat == "not_taked") {
+                                Notification::create([
+                                    'user_id' => $memb->user_id,
+                                    'daret_id' => $memb->daret_id,
 
-                'content' => 'Congrats it s your turn',
-                // ...
-                            ]);}
-        else if($tour->etat == "not_payed"){
-            Notification::create([
-                'user_id' => $member->user_id,
-                'daret_id' => $member->daret_id,
+                                    'content' => 'Congrats it s your turn',
+                                    // ...
+                                ]);
+                            } else if ($tour->etat == "not_payed") {
+                                Notification::create([
+                                    'user_id' => $memb->user_id,
+                                    'daret_id' => $memb->daret_id,
 
-                'content' => 'It s time to pay',
-                // ...
-                            ]);}					
+                                    'content' => 'It s time to pay',
+                                    // ...
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-    }
-}
-}
-    }
-    }
-
-    $darets = Daret::where('type', 'month')->get();
+        $darets = Daret::where('type_periode', 'month')->get();
 
         foreach ($darets as $daret) {
             $now = Carbon::now();
             $FinalDate = Carbon::parse($daret->date_final);
-            if($now->equalTo($FinalDate)){
+            if ($now->equalTo($FinalDate)) {
                 $daret->etat = 2;
-            
-    }else{
-        if($daret->etat == 1){
-        // Create monthly notifications
-        $notifyDate = Carbon::parse($daret->date_last);
-        $now = Carbon::now();
-    if ($notifyDate->diffInMonths($now) >= 1){
-        $daret->date_last=now();
-        $daret->curent_tour++;
-        $daret->save();
-    foreach ($daret->membres() as $member){
-        $tour = Tour::where('membre_id', $member->id)->where('tour', $daret->curent_tour)->get();
-        if($tour->etat == "not_taked"){
-                Notification::create([
-                'user_id' => $member->user_id,
-                'daret_id' => $member->daret_id,
+            } else {
+                if ($daret->etat == 1) {
+                    // Create monthly notifications
+                    $notifyDate = Carbon::parse($daret->date_last);
+                    $now = Carbon::now();
+                    if ($notifyDate->diffInMonths($now) >= 1) {
+                        $daret->date_last = now();
+                        $daret->curent_tour++;
+                        $daret->save();
+                        foreach ($daret->membre as $memb) {
+                            $tour = Tour::where('membre_id', $memb->id)->where('tour', $daret->curent_tour)->get();
+                            if ($tour->etat == "not_taked") {
+                                Notification::create([
+                                    'user_id' => $memb->user_id,
+                                    'daret_id' => $memb->daret_id,
 
-                'content' => 'Congrats it s your turn',
-                // ...
-                            ]);}
-        else if($tour->etat == "not_payed"){
-            Notification::create([
-                'user_id' => $member->user_id,
-                'daret_id' => $member->daret_id,
-                'content' => 'It s time to pay',
-                // ...
-                            ]);}					
-
-    }
-}
-}
-    }
-    }
-    
+                                    'content' => 'Congrats it s your turn',
+                                    // ...
+                                ]);
+                            } else if ($tour->etat == "not_payed") {
+                                Notification::create([
+                                    'user_id' => $memb->user_id,
+                                    'daret_id' => $memb->daret_id,
+                                    'content' => 'It s time to pay',
+                                    // ...
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

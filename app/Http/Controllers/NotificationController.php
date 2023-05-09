@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateNotificationRequest;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -45,11 +46,11 @@ class NotificationController extends Controller
      */
     public function read()
     {
-        $notifications = $notifications = Auth::user()->notifications();
-        foreach ($notifications as $notification ) {
+        $notifications = $notifications = Auth::user()->notifications;
+        foreach ($notifications as $notification) {
             $notification->read = "read";
-           $notification->save(); 
-           return redirect('/');
+            $notification->save();
+            return redirect('/');
         }
     }
 

@@ -1,5 +1,8 @@
 
-
+@php
+  $notifications = Auth::user()->notifications()->latest()->take(3)->get();
+  $unread = Auth::user()->notifications()->where('read', '=', 'unread')->count();
+@endphp
 
 <!DOCTYPE html>
 <html lang="en" class="no-js">
@@ -14,7 +17,9 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Major+Mono+Display" rel="stylesheet">
-    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.1/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.1/css/boxicons.min.css' rel='stylesheet'><link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <!-- Styles -->
     <link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +53,7 @@
                 
                 "  href="#" class="btn btn-primary btn-quick-link border ">quit daret</a>
                 @endif
-                @if ($membre->role !="admin" && $membre->tours->count()==0 )
+                @if ($membre->role =="admin" && $membre->tours->count()==0 )
                 <a href="{{route('destroy',$membre->daret)}}" class="btn btn-danger">delete daret</a>
                     
                 @endif
@@ -171,7 +176,7 @@
                    @if (  $membre->daret->etat==0)
                   <h3 class="text-center">the peoples </h3>
                   @else 
-                  <h3 class="text-center">{{ $membre->daret->type_periode}} {{$membre->daret->periode_ac}}</h3>
+                  <h3 class="text-center">{{ $membre->daret->type_periode}} {{$membre->daret->curent_tour}}</h3>
                   @endif
                  <table class="table table-sm">
                   <thead class="table-primary"> 
@@ -213,38 +218,22 @@
                 }"  href="#" class="btn btn-danger bi bi-trash">delete</a><i class="bi bi-trash"></i>
                  @endif 
 
-                 @if ($mem->daret->etat==1 && $membre->role =="admin"&& $mem->tours->count() != 0  )
-              @if ($mem->tours->count()!=0)
+                 @if ($mem->daret->etat==1 && $mem->tours->count() != 0  )
+                  @if ($mem->tours->count()!=0)
              
               @foreach ($mem->tours as $tour)
-              @if($tour->nbr == $membre->daret->periode_ac)
-              @if($tour->etat =="not_payed")
-                         <a href="{{route('updatetour',$mem)}}"  class="btn btn-primary">pay</a>
+              @if($tour->nbr == $membre->daret->curent_tour)
+              @if($tour->etat =="not_payed" && $membre->role =="admin")
+            
+                         <a href="{{route('updatetour',$tour)}}"  class="btn btn-primary">pay</a>
               @elseif($tour->etat =="payed")
               <p class="text-success ">payed</p>
               
-              @elseif($tour->etat =="not_taked")
+              @elseif($tour->etat =="not_taked" && $membre->role =="admin")
+              <a class="btn btn-primary" href="{{route('updatetourtake',['tour'=>$tour,'membre'=>$mem])}}">take</a>
               @php $buttonDisplayed = false; @endphp
-              @foreach ($mem->daret->membre as $membre)
-                  @foreach ($membre->tours as $tour)
-                      @if($tour->nbr == $mem->daret->periode_ac )
-                          @if($tour->etat == "payed" || $tour->etat == "not_taked" )
-                              @if(!$buttonDisplayed)
-                            
-                                  <a class="btn btn-primary" href="{{route('updatetourtake',['tour'=>$tour,'membre'=>$mem])}}">take</a>
-                                 
-                                  @php $buttonDisplayed = true; @endphp
-                              @endif
-                          @endif
-                      @endif
-                      @if($tour->etat == "payed")
-                          @break
-                      @endif
-                  @endforeach
-                  @if($buttonDisplayed)
-                      @break
-                  @endif
-              @endforeach
+
+            {{--  --}}
               @elseif($tour->etat =="taked")
                <p class="text-success ">taked</p>
               @endif
@@ -308,9 +297,12 @@
             @csrf
             <div class="col-md-6">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="user" placeholder="usename or email">
+                    <input type="text" id="search" class="form-control" name="search" placeholder="usename or email">
+
+                    <ul id="results"></ul>
 
                    
+                  
                         
                 </div>
             </div>
@@ -469,4 +461,83 @@ $membre->daret->nbr_membre -$membre->daret->membre->count()==0
     }
   }
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
+<script>
+  $(document).ready(function() {
+ $('#search').on('keyup', function() {
+     var query = $(this).val();
+     if (query.length >= 1) {
+         $.ajax({
+             url: '/userser/' + query,
+             method: 'GET',
+             success: function(response) {
+                 $('#results').empty();
+                 if (response.length > 0) {
+                     response.forEach(function(utilisateur) {
+                         var listItem = $('<li>' + utilisateur.username + ' (' + utilisateur.email + ')</li>');
+                         listItem.on('click', function() {
+                             $('#search').val(utilisateur.username);
+                             $('#results').empty();
+                         });
+                         $('#results').append(listItem);
+                     });
+                 } else {
+                     $('#results').append('<li>Aucun utilisateur trouvé</li>');
+                 }
+             },
+             error: function(response) {
+                 console.log(response.responseText);
+             }
+         });
+     } else {
+         $('#results').empty();
+     }
+ });
+}); </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {{-- @foreach ($mem->daret->membre as $membre)
+                  @foreach ($membre->tours as $tour)
+                      @if($tour->nbr == $mem->daret->curent_tour )
+                          @if($tour->etat == "payed" || $tour->etat == "not_taked" )
+                              @if(!$buttonDisplayed)
+                            
+                                   <a class="btn btn-primary" href="{{route('updatetourtake',$mem)}}">take</a>
+                                 
+                                  @php $buttonDisplayed = true; @endphp
+                              @endif
+                          @endif
+                      @endif
+                     @if($tour->etat == "payed")
+                          @break
+                      @endif 
+                  @endforeach
+                  @if($buttonDisplayed)
+                      @break
+                  @endif
+              @endforeach --}}

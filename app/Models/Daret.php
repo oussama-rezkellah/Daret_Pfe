@@ -22,6 +22,10 @@ class Daret extends Model
     {
         return $this->hasMany(Membre::class);
     }
+    public function notifications()
+    {
+        return $this->hasMany(Membre::class);
+    }
 
     protected $fillable = [
         'name',

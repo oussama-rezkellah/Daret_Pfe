@@ -1,3 +1,9 @@
+
+
+@php
+  $countdaret = Auth::user()->membres()->count();
+  $countnotif = Auth::user()->invitations()->count();
+@endphp
 <div class="col-md-2 newsfeed-left-side sticky-top shadow-sm" id="sidebar-wrapper">
                 
     <div class="card newsfeed-user-card h-100">
@@ -9,15 +15,14 @@
           <li class="list-group-item d-flex justify-content-between align-items-center ">
               <a href="{{route('my_daret')}}" class="sidebar-item"><img
                       src="../images/icons/left-sidebar/group.png" alt="group"> Groups</a>
-              <span class="badge badge-primary badge-pill">17</span>
+              <span class="badge badge-primary badge-pill"> {{$countdaret}} </span>
           </li>
         
           <li class="list-group-item d-flex justify-content-between align-items-center">
               <a href="{{route('indexinvit')}}" class="sidebar-item"><img
                       src="../images/icons/left-sidebar/find-friends.png" alt="find-friends">
                   invitations</a>
-              <span class="badge badge-primary badge-pill"><i
-                      class='bx bx-chevron-right'></i></span>
+              <span class="badge badge-primary badge-pill">{{$countnotif}}</span>
           </li>
         </ul>
     </div>

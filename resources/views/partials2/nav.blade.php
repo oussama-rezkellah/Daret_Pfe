@@ -1,3 +1,7 @@
+@php
+  $notifications = Auth::user()->notifications()->latest()->take(3)->get();
+  $unread = Auth::user()->notifications()->where('read', '=', 'unread')->count();
+@endphp
 <nav id="navbar-main" class="navbar navbar-expand-lg shadow-sm sticky-top">
     <div class="w-100 justify-content-md-center">
         <ul class="nav navbar-nav enable-mobile px-2">
@@ -50,169 +54,41 @@
                     <img src="../images/icons/navbar/create.png" alt="navbar icon">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right nav-dropdown-menu">
-                    <a href="#" class="dropdown-item" aria-describedby="createGroup">
+                    <a href="{{route('creer_daret')}}" class="dropdown-item" aria-describedby="createGroup">
                         <div class="row">
                             <div class="col-md-2">
                                 <i class='bx bx-group post-option-icon'></i>
                             </div>
-                            <div class="col-md-10">
-                                <span class="fs-9">Group</span>
-                                <small id="createGroup" class="form-text text-muted">Find people with
-                                    shared interests</small>
+                            <div class="col-md-10" id="createGroupDiv">
+                                <span class="fs-9">group</span>
+                                <small id="createGroup" class="form-text text-muted">create group and
+                                    add people</small>
                             </div>
+                           
                         </div>
                     </a>
-                    <a href="#" class="dropdown-item" aria-describedby="createEvent">
+                    <a href="{{ route('_daret')}}" class="dropdown-item" aria-describedby="createEvent">
                         <div class="row">
                             <div class="col-md-2">
                                 <i class='bx bx-calendar post-option-icon'></i>
                             </div>
-                            <div class="col-md-10">
-                                <span class="fs-9">Event</span>
-                                <small id="createEvent" class="form-text text-muted">bring people
-                                    together with a public or private event</small>
+                            <div class="col-md-10" id="discover">
+                                <span class="fs-9">discover</span>
+                                <small id="createEvent" class="form-text text-muted">Find groups</small>
                             </div>
+                           
                         </div>
                     </a>
                 </div>
             </li>
-            <li class="nav-item s-nav dropdown message-drop-li">
-                <a href="#" class="nav-link nav-links message-drop drop-w-tooltip"
-                    data-toggle="dropdown" data-placement="bottom" data-title="Messages" role="button"
-                    aria-haspopup="true" aria-expanded="false">
-                    <img src="../images/icons/navbar/message.png" class="message-dropdown"
-                        alt="navbar icon"> <span class="badge badge-pill badge-primary">1</span>
-                </a>
-                <ul class="dropdown-menu notify-drop dropdown-menu-right nav-drop shadow-sm">
-                    <div class="notify-drop-title">
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Messages | <a
-                                    href="#">Requests</a></div>
-                            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                <a href="#" class="notify-right-icon">
-                                    Mark All as Read
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end notify title -->
-                    <!-- notify content -->
-                    <div class="drop-content">
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-6.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Susan P. Jarvis</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <i class='bx bx-check'></i> This party is going to have a DJ, food,
-                                    and drinks.
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-5.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Ruth D. Greene</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    Great, I’ll see you tomorrow!.
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-7.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Kimberly R. Hatfield</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    yeah, I will be there.
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-8.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Joe S. Feeney</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    I would really like to bring my friend Jake, if...
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-9.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">William S. Willmon</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    Sure, what can I help you with?
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-10.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Sean S. Smith</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    Which of those two is best?
-                                </p>
-                            </div>
-                        </li>
-                    </div>
-                    <div class="notify-drop-footer text-center">
-                        <a href="#">See More</a>
-                    </div>
-                </ul>
-            </li>
+           
+              
             <li class="nav-item s-nav dropdown notification">
                 <a href="#" class="nav-link nav-links rm-drop-mobile drop-w-tooltip"
                     data-toggle="dropdown" data-placement="bottom" data-title="Notifications"
                     role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="../images/icons/navbar/notification.png" class="notification-bell"
-                        alt="navbar icon"> <span class="badge badge-pill badge-primary">3</span>
+                        alt="navbar icon"> <span class="badge badge-pill badge-primary">{{ $unread }}</span>
                 </a>
                 <ul class="dropdown-menu notify-drop dropdown-menu-right nav-drop shadow-sm">
                     <div class="notify-drop-title">
@@ -229,124 +105,32 @@
                     <!-- end notify title -->
                     <!-- notify content -->
                     <div class="drop-content">
+                        @foreach ($notifications as $notification)
                         <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-10.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
                             <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Sean</a> <span
-                                    class="notification-type">replied to your comment on a post in
-                                </span><a href="#" class="notification-for">PHP</a>
+                                <a href="#" class="notification-user">{{ $notification->user->first_name }}</a> <span
+                                    class="notification-type">{{ $notification->content }}
+                                    
+                                    @foreach ($notification->daret->membre as $memb)
+                                    @if ($memb->user_id ==$notification->user_id)
+                                </span><a href="{{route('show',$memb)}}" class="notification-for"> <b>{{ $notification->daret->name }}</b></a>
+                                    @endif
+                                     
+                                    @endforeach
+                              
                                 <a href="#" class="notify-right-icon">
                                     <i class='bx bx-radio-circle-marked'></i>
                                 </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-group'></i></span> 3h
-                                </p>
+                                
                             </div>
+                        </li>
+                        @endforeach
+                        </li>
+                      
+                      
                         </li>
                         <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-7.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Kimberly</a> <span
-                                    class="notification-type">likes your comment "I would really...
-                                </span>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-like'></i></span> 7h
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-8.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <span class="notification-type">10 people saw your story before it
-                                    disappeared. See who saw it.</span>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bx-../images'></i></span> 23h
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-11.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Michelle</a> <span
-                                    class="notification-type">posted in </span><a href="#"
-                                    class="notification-for">Argon Social Design System</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-quote-right'></i></span> 1d
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-5.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Karen</a> <span
-                                    class="notification-type">likes your comment "Sure, here... </span>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-like'></i></span> 2d
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <div class="notify-img">
-                                    <img src="../images/users/user-12.png"
-                                        alt="notification user image">
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-sm-10 col-xs-10">
-                                <a href="#" class="notification-user">Irwin</a> <span
-                                    class="notification-type">posted in </span><a href="#"
-                                    class="notification-for">Themeforest</a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
-                                <p class="time">
-                                    <span class="badge badge-pill badge-primary"><i
-                                            class='bx bxs-quote-right'></i></span> 3d
-                                </p>
-                            </div>
-                        </li>
+                       
                     </div>
                     <div class="notify-drop-footer text-center">
                         <a href="#">See More</a>
@@ -360,9 +144,9 @@
                     <img src="../images/icons/navbar/flag.png" alt="navbar icon">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right nav-drop">
-                    <a class="dropdown-item" href="newsfeed-2.html">Newsfeed 2</a>
-                    <a class="dropdown-item" href="sign-in.html">Sign in</a>
-                    <a class="dropdown-item" href="sign-up.html">Sign up</a>
+                  
+                    <a class="dropdown-item" href="{{route('my_daret')}}">Groups</a>
+                    <a class="dropdown-item" href="{{route('indexinvit')}}">invitations</a>
                 </div>
             </li>
             <li class="nav-item s-nav">

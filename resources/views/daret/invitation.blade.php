@@ -46,7 +46,7 @@
                 @if ($invitation->count() == 0)
                     <h3 class="text-center">aucune invitation</h3>
                 @else
-                <table class="table">
+                <table class="table-responsive table-sm">
                     <tr>
                     <th>#</th>
                     <th>name daret</th>

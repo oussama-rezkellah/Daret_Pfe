@@ -27,7 +27,7 @@
 <body>
   
 
-@include('partials.nav')
+@include('partials2.nav')
 
 
 <div class="container-fluid" id="wrapper">
@@ -59,7 +59,7 @@
                       <input type="text"  name="nom" class="form-control" id="exampleFormControlInput1" >
                     </div>
                     <div class="form-group">
-                        <label for="exampleFormControlInput1">amount</label>
+                        <label for="exampleFormControlInput1">amount DH</label>
                         <input type="text"  name="montant" class="form-control" id="exampleFormControlInput1" >
                       </div>
                       <div class="form-group">
@@ -71,7 +71,7 @@
                     <div class="form-group">
                       <label for="test">the type of period</label>
                       <select name="type_periode" class="form-control" id="test">
-                        <option value="">select </option>
+                        <option selected>select </option>
                         <option value="month">Month</option>
                         <option value="week">week</option>
                       </select>
@@ -79,7 +79,7 @@
                     <div class="form-group">
                         <label for="type_order">the type of order</label>
                         <select name="type_order" class="form-control" id="test">
-                          <option value="">select </option>
+                          <option selected>select </option>
                           <option value="random">random</option>
                           <option value="manually">manually</option>
                         </select>

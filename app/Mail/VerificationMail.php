@@ -17,20 +17,18 @@ class VerificationMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($id,$co)
+    public function __construct($id, $co)
     {
-        $this->code=$co;
-        $this->id_user=$id;
+        $this->code = $co;
+        $this->id_user = $id;
     }
 
     public function build()
     {
         return $this->subject('no reply')
-                ->view('emails.verification')
-                ->with([
-                    'verificationLink' => 'http://127.0.0.1:8000/user/verify/?verification=' . $this->code . '&id=' . $this->id_user,
-                ]);
+            ->view('emails.verification')
+            ->with([
+                'verificationLink' => 'http://127.0.0.1:8000/user/verify/?verification=' . $this->code . '&id=' . $this->id_user,
+            ]);
     }
-
-    
 }

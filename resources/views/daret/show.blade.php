@@ -11,7 +11,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="../image/png" href="../images/logo-16x16.png" />
+    <link rel="icon" type="image/png" href="{{asset('images/logo-16x16.png')}}" />
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Argon - Social Network</title>
 
@@ -22,16 +22,16 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <!-- Styles -->
-    <link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/style.css" rel="stylesheet">
-    <link href="../css/components.css" rel="stylesheet">
-    <link href="../css/media.css" rel="stylesheet">
-    <script src="js/load.js" type="text/javascript"></script>
+    <link href="{{asset('/css/bootstrap/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{asset('/css/style.css')}}" rel="stylesheet">
+    <link href="{{asset('/css/components.css')}}" rel="stylesheet">
+    <link href="{{asset('/css/media.css')}}" rel="stylesheet">
+    <script src="{{asset('js/load.js')}}" type="text/javascript"></script>
 </head>
 
 <body>
   
-
+  
 @include('partials2.nav')
 
 
@@ -54,7 +54,8 @@
                 "  href="#" class="btn btn-primary btn-quick-link border ">quit daret</a>
                 @endif
                 @if ($membre->role =="admin" && $membre->tours->count()==0 )
-                <a href="{{route('destroy',$membre->daret)}}" class="btn btn-danger">delete daret</a>
+                <a href="{{route('destroy',$membre->daret)}}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this daret?')">Delete daret</a>
+
                     
                 @endif
                
@@ -72,7 +73,7 @@
                                 <div class="card">
                                   <div class="card-header">{{$membre->daret->name}}</div>
                                   <div class="card-body">
-                                    @if ($membre->daret->etat==0)
+                                  
                                         
                                     
                                     <p class="card-text">creation date: <b>{{$membre->daret->created_at->format('d-m-Y')}}</b> </p>
@@ -96,7 +97,10 @@
                                     @endif
                                     @if ($membre->daret->etat==1)
                                     already launched at {{$membre->daret->date_start}}
-                                @endif</b> </p>
+                                @endif
+                                @if ($membre->daret->etat==2)
+                                finished at {{$membre->daret->date_final}}
+                            @endif</b> </p>
                                 @foreach ($membre->daret->membre  as $mem)
                                    @if($mem->role== "admin")
                                       @if ($mem->user->username == $membre->user->username )
@@ -106,7 +110,7 @@
                                       @endif
                                   @endif
                                 @endforeach
-                             @endif
+                             
                                
                                   </div>
                                  
@@ -148,7 +152,7 @@
 
 
                              @if ($membre->daret->nbr_membre -$membre->daret->membre->count()==0
-                             &&   $membre->tours->count()!=0 && $membre->daret->etat!=1)
+                             &&   $membre->tours->count()!=0 && $membre->daret->etat!=1 && $membre->daret->etat!=2  )
                              <a type="a" href="{{route('start',$membre)}}" class="btn btn-lg btn-primary mr-5"> Start  </a>
                                  @endif
                               @endif
@@ -176,9 +180,36 @@
                    @if (  $membre->daret->etat==0)
                   <h3 class="text-center">the peoples </h3>
                   @else 
-                  <h3 class="text-center">{{ $membre->daret->type_periode}} {{$membre->daret->curent_tour}}</h3>
+                  @for($i=1;$i<=$membre->daret->curent_tour ;$i++)
+                                            <a href="{{route('show.per',[$membre,$i])}}" 
+                                            @if ($i ==$per)
+                                           class="btn btn-primary"
+                                            @else
+                                            class="btn btn-light "
+                                            @endif
+                                           >periode {{$i}}</a>
+                 
+                  </table>
+                 
+                  @endfor
+              
+                  
+
+
+
+
+
+                  
+
+
+
+                 
+                  <h3 class="text-center">
+                    {{  $per == $membre->daret->nbr_tour ? 'last' : '' }}
+                    {{ $membre->daret->type_periode}} {{$per  != $membre->daret->nbr_tour ? $per : '' }}
+                  </h3>
                   @endif
-                 <table class="table table-sm">
+                 <table id="table_" class="table table-sm">
                   <thead class="table-primary"> 
                     <tr>
                      
@@ -190,6 +221,7 @@
                     <th>email</th>
                     <th>action</th>
                 </tr></thead>
+                
                 @foreach ($membre->daret->membre  as  $mem)
                 @if ($mem->role =="user" || $mem->tours->count()!=0)
                     
@@ -208,7 +240,7 @@
              <td>{{$mem->user->first_name}}</td>
              <td>{{$mem->user->username}}</td>
              <td>{{$mem->user->email}}</td>
-             <td>
+             <td id='test'>
              @if ($mem->daret->etat==0  && $membre->role =="admin"&& $mem->tours->count()==0 
              )
              <a onclick="
@@ -218,24 +250,31 @@
                 }"  href="#" class="btn btn-danger bi bi-trash">delete</a><i class="bi bi-trash"></i>
                  @endif 
 
-                 @if ($mem->daret->etat==1 && $mem->tours->count() != 0  )
+                 @if ( ($mem->daret->etat==1 || $mem->daret->etat==2)  && $mem->tours->count() != 0  )
                   @if ($mem->tours->count()!=0)
              
               @foreach ($mem->tours as $tour)
-              @if($tour->nbr == $membre->daret->curent_tour)
+         
+              @if($tour->nbr == $per)
               @if($tour->etat =="not_payed" && $membre->role =="admin")
             
-                         <a href="{{route('updatetour',$tour)}}"  class="btn btn-primary">pay</a>
+                         <a href="{{route('updatetour',[$tour,$mem,$per ])}}"  class="btn btn-primary">pay </a> 
+               @elseif($tour->etat =="not_payed" && $membre->role !="admin")
+            
+              <p class="badge badge-warning">not payed </p>      
               @elseif($tour->etat =="payed")
-              <p class="text-success ">payed</p>
+              <p class="badge badge-success">payed  {{ $tour->updated_at->format('h:i A, F d') }}</p>
               
               @elseif($tour->etat =="not_taked" && $membre->role =="admin")
-              <a class="btn btn-primary" href="{{route('updatetourtake',['tour'=>$tour,'membre'=>$mem])}}">take</a>
+              <a class="btn btn-primary" href="{{route('updatetourtake',['tour'=>$tour,'membre'=>$mem,$per])}}">take</a>
+              @elseif($tour->etat =="not_taked" && $membre->role !="admin")
+            
+              <p class="badge badge-warning">not taked </p> 
               @php $buttonDisplayed = false; @endphp
 
             {{--  --}}
               @elseif($tour->etat =="taked")
-               <p class="text-success ">taked</p>
+               <p class="badge badge-success ">taked {{ $tour->updated_at->format('h:i A, F d') }} </p>
               @endif
               @endif
               @endforeach
@@ -259,9 +298,9 @@
 
 @include('partials.footer')
     <!-- Core -->
-    <script src="../js/jquery/jquery-3.3.1.min.js"></script>
-    <script src="../js/popper/popper.min.js"></script>
-    <script src="../js/bootstrap/bootstrap.min.js"></script>
+    <script src="{{asset('/js/jquery/jquery-3.3.1.min.js')}}"></script>
+    <script src="{{asset('/js/popper/popper.min.js')}}"></script>
+    <script src="{{asset('/js/bootstrap/bootstrap.min.js')}}"></script>
     <!-- Optional -->
     <script type="text/javascript">
         $("#menu-toggle").click(function (e) {
@@ -270,8 +309,8 @@
         });
 
     </script>
-    <script src="../js/app.js"></script>
-    <script src="../js/components/components.js"></script>
+    <script src="{{asset('/js/app.js')}}"></script>
+    <script src="{{asset('/js/components/components.js')}}"></script>
 
 
 
@@ -297,7 +336,7 @@
             @csrf
             <div class="col-md-6">
                 <div class="form-group">
-                    <input type="text" id="search" class="form-control" name="search" placeholder="usename or email">
+                    <input type="text" id="searchu" class="form-control" name="search" placeholder="usename or email">
 
                     <ul id="results"></ul>
 
@@ -461,56 +500,39 @@ $membre->daret->nbr_membre -$membre->daret->membre->count()==0
     }
   }
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-<script>
-  $(document).ready(function() {
- $('#search').on('keyup', function() {
-     var query = $(this).val();
-     if (query.length >= 1) {
-         $.ajax({
-             url: '/userser/' + query,
-             method: 'GET',
-             success: function(response) {
-                 $('#results').empty();
-                 if (response.length > 0) {
-                     response.forEach(function(utilisateur) {
-                         var listItem = $('<li>' + utilisateur.username + ' (' + utilisateur.email + ')</li>');
-                         listItem.on('click', function() {
-                             $('#search').val(utilisateur.username);
-                             $('#results').empty();
-                         });
-                         $('#results').append(listItem);
-                     });
-                 } else {
-                     $('#results').append('<li>Aucun utilisateur trouvé</li>');
-                 }
-             },
-             error: function(response) {
-                 console.log(response.responseText);
-             }
-         });
-     } else {
-         $('#results').empty();
-     }
- });
-}); </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#searchu').on('keyup', function() {
+        var query = $(this).val();
+        $.ajax({
+          url: '/userser/user',
+          method: 'POST',
+          dataType: 'json',
+          data: {
+            _token: '{{ csrf_token() }}',
+            query: query
+          },
+          success: function(response) {
+            $('#results').empty();
+            $.each(response, function(index, member) {
+              var listItem = $('<li>' + member.username + ' (' + member.email + ')</li>');
+              listItem.on('click', function() {
+                $('#searchu').val(member.username);
+                $('#results').empty();
+              });
+              $('#results').append(listItem);
+            });
+          },
+          error: function(response) {
+            console.log(response.responseText);
+          }
+        });
+      });
+    });
+  </script>
 
 
 

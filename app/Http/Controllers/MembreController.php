@@ -38,20 +38,18 @@ class MembreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Membre $membre)
+    public function show(Membre $membre, $per = 1)
     {
-
-
-
+        $perh = $membre->daret->curent_tour;
         if (auth::id() == $membre->user_id) {
-
-            return view('daret.show', compact('membre'));
+            if ($per === 0) {
+                $per = $membre->daret->curent_tour;
+            }
+            return view('daret.show', compact('membre', 'per'));
         } else {
-
             return redirect()->to(route('my_daret'));
         }
     }
-
     /**
      * Show the form for editing the specified resource.
      */

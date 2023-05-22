@@ -51,14 +51,18 @@ Route::get('/myDarets', [DaretController::class, 'daret'])->name('my_daret')->mi
 Route::get('/', [DaretController::class, 'index'])->name('_daret')->middleware('auth');
 
 
-Route::get('/myDarets/{membre}', [MembreController::class, 'show'])->name('show')->middleware('auth');
+Route::post('/searchdaret', [DaretController::class, 'search'])->name('search');
+
+Route::post('/searchdaretD', [DaretController::class, 'searchdaretD'])->name('searchdaretD');
+
+
 Route::get('/myDarets/start/{membre}', [DaretController::class, 'start'])->name('start')->middleware('auth');
 
 ///
 Route::post('/myDarets/add/{daret}',  [InvitationController::class, 'create'])->name('adduser')->middleware('auth');
 
 ////
-Route::get('/{daret}', [DemandeController::class, 'create'])->name('joindaret')->middleware('auth');
+
 route::get('/dem/{demande}', [DemandeController::class, 'destroy'])->name('destroydemanduser')->middleware('auth');
 ///
 Route::get('/myDaret/{daret}', [DemandeController::class, 'index'])->name('indexdemand')->middleware('auth');
@@ -81,13 +85,13 @@ Route::post('/myDaret/tours/{membre}', [DaretController::class, 'tours'])->name(
 Route::get('/myDaret/toursrandom/{membre}', [DaretController::class, 'toursrandom'])->name('toursrandom')->middleware('auth');
 
 Route::get('/myDaret/delete/{daret}', [DaretController::class, 'destroy'])->name('destroy')->middleware('auth');
-Route::get('/myDaret/updatetour/{tour}', [DaretController::class, 'updatetour'])->name('updatetour')->middleware('auth');
-Route::get('/myDaret/updatetourtake/{tour}/{membre}', [DaretController::class, 'updatetourtake'])->name('updatetourtake')->middleware('auth');
+Route::get('/myDaret/updatetour/{tour}/{mem}/{per}', [DaretController::class, 'updatetour'])->name('updatetour')->middleware('auth');
+Route::get('/myDaret/updatetourtake/{tour}/{membre}/{per}', [DaretController::class, 'updatetourtake'])->name('updatetourtake')->middleware('auth');
 
 /////////
 
-
-
+Route::get('/myDarets/{membre}', [MembreController::class, 'show'])->name('show')->middleware('auth');
+Route::get('/myDarets/{membre}/tour/{per?}', [MembreController::class, 'show'])->name('show.per')->middleware('auth');
 Route::put('/setting', [UserController::class, 'settingupdate'])->middleware('auth');
 
 Route::get('/setting/contact', [UserController::class, 'contactform'])->middleware('auth');
@@ -104,17 +108,29 @@ Route::post('/profileupdate', [UserController::class, 'imageupdate'])->middlewar
 
 
 Route::get('/check-username', [UserController::class, 'checkUsername']);
-
+Route::get('/helpsupport', [AdminController::class, 'support'])->name('support')->middleware('auth')
+    ->withoutMiddleware('super');
 Route::get('/checkemail', [UserController::class, 'checkemail']);
-Route::get('/userser/{query}', [Controller::class, 'recherche']);
+Route::post('/userser/user', [Controller::class, 'recherche']);
+Route::get('/admin/charts', [AdminController::class, 'charts'])->name('charts')->middleware('super');
+Route::get('/admin/darets', [AdminController::class, 'index'])->name('darets')->middleware('super');
+Route::get('/admin/daret0', [AdminController::class, 'index'])->name('daret0')->middleware('super');
+Route::get('/admin/daretl', [AdminController::class, 'index'])->name('daretl')->middleware('super');
+Route::get('/admin/daretf', [AdminController::class, 'index'])->name('daretf')->middleware('super');
+Route::get('/admin/users', [AdminController::class, 'index'])->name('users')->middleware('super');
+Route::post('/admin/create', [AdminController::class, 'createDaret'])->name('createDaret')->middleware('super');;
+Route::get('/admin/{daret}/', [AdminController::class, 'showdaret'])->name('daret')->middleware('super');
+Route::get('/admin/{daret}/tour/{per?}', [AdminController::class, 'showdaret'])->name('showdaret.per')->middleware('auth');
+Route::get('/admin/{daret}/start', [AdminController::class, 'startdaret'])->name('startA')->middleware('super');
+Route::get('/admin/{daret}/toursrandomA', [AdminController::class, 'toursrandomA'])->name('toursrandomA')->middleware('super');
+Route::get('/admin/{daret}/toursmanuallyA', [AdminController::class, 'toursmanuallyA'])->name('toursmanuallyA')->middleware('super');
 
-Route::get('/admin/darets', [AdminController::class, 'index'])->name('darets');
-Route::get('/admin/daret0', [AdminController::class, 'index'])->name('daret0');
-Route::get('/admin/daretl', [AdminController::class, 'index'])->name('daretl');
-Route::get('/admin/daretf', [AdminController::class, 'index'])->name('daretf');
-Route::get('/admin/users', [AdminController::class, 'index'])->name('users');
-Route::post('/admin/create', [AdminController::class, 'createDaret'])->name('createDaret');
-Route::get('/admin/{daret}/', [AdminController::class, 'showdaret'])->name('daret');
-Route::get('/admin/{daret}/start', [AdminController::class, 'startdaret'])->name('startA');
-Route::get('/admin/{daret}/toursrandomA', [AdminController::class, 'toursrandomA'])->name('toursrandomA');
-Route::get('/admin/{daret}/toursmanuallyA', [AdminController::class, 'toursmanuallyA'])->name('toursmanuallyA');
+
+
+
+
+
+
+
+Route::get('/{daret}', [DemandeController::class, 'create'])->name('joindaret')->middleware('auth');
+Route::post('/send-email', [DaretController::class, 'sendEmail'])->name('send.email');

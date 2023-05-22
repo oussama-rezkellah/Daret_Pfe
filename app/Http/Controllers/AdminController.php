@@ -39,22 +39,22 @@ class AdminController extends Controller
         return Daret::all();
     }
 
-    function daret0()
+    static  function daret0()
     {
         return Daret::where('etat', 0)->get();
     }
 
-    function daretlaunch()
+    static  function daretlaunch()
     {
         return Daret::where('etat', 1)->get();
     }
-    function Daretfinish()
+    static function Daretfinish()
     {
 
 
         return Daret::where('etat', 2)->get();
     }
-    function user()
+    static function user()
     {
         return  User::all();
     }
@@ -98,10 +98,17 @@ class AdminController extends Controller
             return false;
         }
     }
-    function showdaret(Daret $daret)
+    function showdaret(Daret $daret, $per = 0)
     {
-        return view('admin.daret', compact('daret'));
+
+        if ($per === 0) {
+            $per = $daret->curent_tour;
+        }
+        return  view('admin.daret', compact('daret', 'per'));
     }
+
+
+
     static function checktours(Daret $daret)
     {
 
@@ -144,6 +151,7 @@ class AdminController extends Controller
             $dd = $daret->update([
                 'date_start' => now(),
                 'etat' => 1,
+                'curent_tour' => 1,
             ]);
 
             if ($daret->type_periode == 'week') {
@@ -196,6 +204,15 @@ class AdminController extends Controller
         return
             redirect()->back()->with('msg', 'your tours successfully added');
     }
-}
 
-///
+
+    function charts()
+    {
+        $darets =   Daret::all();
+        return view('admin.charts', compact('darets'));
+    }
+    function support()
+    {
+        return view('support');
+    }
+}

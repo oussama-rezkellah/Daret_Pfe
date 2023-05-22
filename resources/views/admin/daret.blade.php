@@ -1,6 +1,7 @@
 @extends('admin.master')
 
 @section('main')
+
 <main>
   
 
@@ -9,54 +10,7 @@
     <ol class="breadcrumb mb-4">
    <li class="breadcrumb-item active">Dashboard</li>
     </ol>
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">Users</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{route('users')}}">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">Darets</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{route('darets')}}">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">Darets not yet</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{route('daret0')}}">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">Darets launch</div>
-                
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{route('daretl')}}">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-danger text-white mb-4">
-                <div class="card-body">Darets finish</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{route('daretf')}}">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('admin.links')
     <br>
     @if(session('msg'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -163,7 +117,7 @@
            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#demandesmodal" >the requests for {{$daret->name}}</button>
            @endif
            @if ($daret->nbr_membre -$daret->membre->count()==0
-           &&  \App\Http\Controllers\AdminController::checktours($daret)  && $daret->etat!=1
+           &&  \App\Http\Controllers\AdminController::checktours($daret)  && $daret->etat==0
          && \App\Http\Controllers\AdminController::checkdaret($daret)  )
            <a type="a" href="{{route('startA',$daret)}}" class="btn btn-primary"> Start  </a>
                @endif
@@ -179,100 +133,112 @@
           
         </div>
         <div class="card-body">
-            <table id="datatablesSimple">
-                <thead>
-                    <tr>
-                        <th>First name</th>
-                        <th>Last name</th>
-                        <th>username</th>
-                        <th> Email</th>
-                    
-                        
-                        <th>action</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>First name</th>
-                        <th>Last name</th>
-                        <th>username</th>
-                        <th> Email</th>
-                    
-                        
-                        <th>action</th>
-                    
-                    </tr>
-                </tfoot>
-                <tbody>
-                    @foreach ($daret->membre as $mem)
-                    <tr>
-                        <td>{{$mem->user->first_name}}</td>
-                        <td>{{$mem->user->last_name}}</td>
-                        <td>{{$mem->user->username}}</td>
-                        <td>{{$mem->user->email}}</td>
-                    <td>
-                       @if ($daret->etat == 0)
-                      
-                        @if (!\App\Http\Controllers\AdminController::checktours($daret) && 
-                          \App\Http\Controllers\AdminController::checkdaret($daret))
-                          
-                            <a onclick="if(confirm('Are you sure you want to delete {{$mem->user->username}} ?'))
-                            { window.location.href = '{{route('deleteuser', ['membre' => $mem])}}';}"  href="#" class="btn btn-danger bi bi-trash">delete</a><i class="bi bi-trash"></i>
-                            
-                       @endif
-                     @endif
+          @for($i=1;$i<=$daret->curent_tour ;$i++)
+                                            <a href="{{route('showdaret.per',[$daret,$i])}}" 
+                                            @if ($i ==$per)
+                                           class="btn btn-primary"
+                                            @else
+                                            class="btn btn-light "
+                                            @endif
+                                           >periode {{$i}}</a>
+             
+                  @endfor
+              
+                  
+<table id="datatablesSimple">
+  <thead>
+      <tr>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>username</th>
+          <th> Email</th>
+      
+          
+          <th>action</th>
+      </tr>
+  </thead>
+  <tfoot>
+      <tr>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>username</th>
+          <th> Email</th>
+      
+          
+          <th>action</th>
+      
+      </tr>
+  </tfoot>
+  <tbody>
+      @foreach ($daret->membre as $mem)
+      <tr>
+          <td>{{$mem->user->first_name}}</td>
+          <td>{{$mem->user->last_name}}</td>
+          <td>{{$mem->user->username}}</td>
+          <td>{{$mem->user->email}}</td>
+      <td>
+         @if ($daret->etat == 0)
+        
+          @if (!\App\Http\Controllers\AdminController::checktours($daret) && 
+            \App\Http\Controllers\AdminController::checkdaret($daret))
+            
+              <a onclick="if(confirm('Are you sure you want to delete {{$mem->user->username}} ?'))
+              { window.location.href = '{{route('deleteuser', ['membre' => $mem])}}';}"  href="#" class="btn btn-danger bi bi-trash">delete</a><i class="bi bi-trash"></i>
+              
+         @endif
+       @endif
 
-                     @if($daret->etat == 1 && \App\Http\Controllers\AdminController::checkdaret($daret))
-                      
-                     @foreach ($mem->tours as $tour)
-                     @if($tour->nbr == $daret->curent_tour)
-                     @if($tour->etat =="not_payed")
-                   
-                                <a href="{{route('updatetour',$tour)}}"  class="btn btn-primary">pay</a>
-                     @elseif($tour->etat =="payed")
-                     <p class="badge bg-success">payed</p>
-                     
-                     @elseif($tour->etat =="not_taked" )
-                     <a class="btn btn-primary" href="{{route('updatetourtake',['tour'=>$tour,'membre'=>$mem])}}">take</a>
-                     @php $buttonDisplayed = false; @endphp
+       @if($daret->etat != 0 && \App\Http\Controllers\AdminController::checkdaret($daret))
+   
+       @foreach ($mem->tours as $tour)
+       @if($tour->nbr == $per)
+       @if($tour->etat =="not_payed")
+     
+                  <a href="{{route('updatetour',[$tour,$mem,$per ])}}"  class="btn btn-primary">pay</a>
+       @elseif($tour->etat =="payed")
+       <p class="badge bg-success">payed {{ $tour->updated_at->format('h:i A, F d') }}</p>
        
-                   {{--  --}}
-                     @elseif($tour->etat =="taked")
-                      <p class="badge bg-success">taked</p>
-                     @endif
-                     @endif
-                     @endforeach
+       @elseif($tour->etat =="not_taked" )
+       <a class="btn btn-primary" href="{{route('updatetourtake',['tour'=>$tour,'membre'=>$mem,$per])}}">take</a>
+       @php $buttonDisplayed = false; @endphp
+
+   
+       @elseif($tour->etat =="taked")
+        <p class="badge bg-success">taked  {{ $tour->updated_at->format('h:i A, F d') }}</p>
+       @endif
+       @endif
+       @endforeach
 
 
-                     @elseif($daret->etat == 1 && !\App\Http\Controllers\AdminController::checkdaret($daret))
-                     
-                     @foreach ($mem->tours as $tour)
-                     @if($tour->nbr == $daret->curent_tour)
-                     @if($tour->etat =="not_payed")
-                     <p class="badge bg-danger ">not payed</p>
-                              
-                     @elseif($tour->etat =="payed")
-                     <p class="badge bg-success ">payed</p>
-                    
-                     @elseif($tour->etat =="not_taked" )
-                    
-                     <p class="badge bg-danger">not taked</p>
-                     @elseif($tour->etat =="taked")
-                     <p class="badge bg-success">taked</p>
-                     @endif
-                     @endif
-                    @endforeach
-                    @endif
-                    
-                    </td>
-                    </tr>
-                   
-                    
-                    @endforeach
-                </tbody>
-            </table> 
-        </div>
+       @elseif($daret->etat != 0 && !\App\Http\Controllers\AdminController::checkdaret($daret))
+       
+       @foreach ($mem->tours as $tour)
+       @if($tour->nbr ==  $per)
+       @if($tour->etat =="not_payed")
+       <p class="badge bg-danger ">not payed</p>
+                
+       @elseif($tour->etat =="payed")
+       <p class="badge bg-success ">payed {{ $tour->updated_at->format('h:i A, F d') }}</p>
+      
+       @elseif($tour->etat =="not_taked" )
+      
+       <p class="badge bg-danger">not taked</p>
+       @elseif($tour->etat =="taked")
+       <p class="badge bg-success">taked {{ $tour->updated_at->format('h:i A, F d') }}</p>
+       @endif
+       @endif
+      @endforeach
+      @endif
+      
+      </td>
+      </tr>
+     
+      
+      @endforeach
+  </tbody>
+</table>
 </div>
+
 </main>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-HVgoWjZYdZG1JS1nFy98hPJG4f4ihM0nH9+eiGjckBPUrOvE+8DHdIktKkoPebxX" crossorigin="anonymous"></script>
@@ -452,3 +418,4 @@
 
 
 @endsection
+

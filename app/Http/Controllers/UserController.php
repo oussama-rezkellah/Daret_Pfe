@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Mail\ResetMail;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Mail\VerificationMail;
 use App\Models\Notification;
@@ -256,14 +257,11 @@ class UserController extends Controller
             return response()->json(['status' => 'available']);
         }
     }
+
     public function read()
     {
         $userId = Auth::id();
 
         // Update the notifications table
-        Notification::where('user_id', $userId)
-            ->where('read', 'unread')
-            ->update(['read' => 'read']);
-        return redirect('/');
-    }
+
 }

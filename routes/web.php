@@ -48,6 +48,8 @@ Route::get('/cree', [DaretController::class, 'create'])->name('creer_daret')->mi
 Route::post('/create', [DaretController::class, 'store'])->name('store')->middleware('auth');
 Route::get('/myDarets', [DaretController::class, 'daret'])->name('my_daret')->middleware('auth');
 
+Route::get('/notification/read', [UserController::class, 'read'])->middleware('auth');
+
 Route::get('/', [DaretController::class, 'index'])->name('_daret')->middleware('auth');
 
 
@@ -111,26 +113,10 @@ Route::get('/check-username', [UserController::class, 'checkUsername']);
 Route::get('/helpsupport', [AdminController::class, 'support'])->name('support')->middleware('auth')
     ->withoutMiddleware('super');
 Route::get('/checkemail', [UserController::class, 'checkemail']);
-Route::post('/userser/user', [Controller::class, 'recherche']);
-Route::get('/admin/charts', [AdminController::class, 'charts'])->name('charts')->middleware('super');
+
 Route::get('/admin/darets', [AdminController::class, 'index'])->name('darets')->middleware('super');
 Route::get('/admin/daret0', [AdminController::class, 'index'])->name('daret0')->middleware('super');
 Route::get('/admin/daretl', [AdminController::class, 'index'])->name('daretl')->middleware('super');
 Route::get('/admin/daretf', [AdminController::class, 'index'])->name('daretf')->middleware('super');
 Route::get('/admin/users', [AdminController::class, 'index'])->name('users')->middleware('super');
-Route::post('/admin/create', [AdminController::class, 'createDaret'])->name('createDaret')->middleware('super');;
-Route::get('/admin/{daret}/', [AdminController::class, 'showdaret'])->name('daret')->middleware('super');
-Route::get('/admin/{daret}/tour/{per?}', [AdminController::class, 'showdaret'])->name('showdaret.per')->middleware('auth');
-Route::get('/admin/{daret}/start', [AdminController::class, 'startdaret'])->name('startA')->middleware('super');
-Route::get('/admin/{daret}/toursrandomA', [AdminController::class, 'toursrandomA'])->name('toursrandomA')->middleware('super');
-Route::get('/admin/{daret}/toursmanuallyA', [AdminController::class, 'toursmanuallyA'])->name('toursmanuallyA')->middleware('super');
 
-
-
-
-
-
-
-
-Route::get('/{daret}', [DemandeController::class, 'create'])->name('joindaret')->middleware('auth');
-Route::post('/send-email', [DaretController::class, 'sendEmail'])->name('send.email');

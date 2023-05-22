@@ -83,8 +83,7 @@
                 <ul class="dropdown-menu notify-drop dropdown-menu-right nav-drop shadow-sm">
                     <div class="notify-drop-title">
                         <div class="row">
-                            <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Notifications <span
-                                    class="badge badge-pill badge-primary ml-2">{{ $unread }}</span></div>
+                            <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Notifications </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right">
                                 <a href="/notification/read" class="notify-right-icon">
                                     Mark All as Read

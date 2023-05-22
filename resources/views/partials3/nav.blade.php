@@ -13,8 +13,8 @@
             <li class="nav-item w-100 py-2">
                 <form class="d-inline form-inline w-100 px-4">
                     <div class="input-group">
-                        <input type="text" class="form-control search-input"
-                            placeholder="Search for people, companies, events and more..."
+                        <input type="text" id="search-inputD" class="form-control search-input"
+                            placeholder="Search darets..."
                             aria-label="Search" aria-describedby="search-addon">
                         <div class="input-group-append">
                             <button class="btn search-button" type="button"><i
@@ -160,12 +160,12 @@
                     @notadmin
                     <a class="dropdown-item" href="/helpsupport">
                         <img src="{{asset('images/icons/navbar/help.png')}}" alt="Navbar icon"> Help
-                        Center</a> 
+                        Center</a>  
+                        
                         @endnotadmin
-
                         @admin
                         <a class="dropdown-item d-flex align-items-center dark-mode"
-                        onClick="event.stopPropagation();" href="/admin/darets">
+                        onClick="event.stopPropagation();" href="admin/darets">
                         <i class="bi bi-person-check-fill"></i>
                         adminspace
                        

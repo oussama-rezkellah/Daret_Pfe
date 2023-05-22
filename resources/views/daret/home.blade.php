@@ -14,18 +14,18 @@
     <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.1/css/boxicons.min.css' rel='stylesheet'>
 
     <!-- Styles -->
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/components.css" rel="stylesheet">
-    <link href="css/media.css" rel="stylesheet">
-    <script src="js/load.js" type="text/javascript"></script>
+    <link href="{{asset('css/bootstrap/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{asset('css/style.css')}}" rel="stylesheet">
+    <link href="{{asset('css/components.css')}}" rel="stylesheet">
+    <link href="{{asset('css/media.css')}}" rel="stylesheet">
+    <script src="{{asset('js/load.js')}}" type="text/javascript"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
   
 
-@include('partials.nav')
+@include('partials3.nav')
 
 
 <div class="container-fluid" id="wrapper">
@@ -52,20 +52,21 @@
               {{ session('msg') }}
               </div>
             @endif
+          
            
                   <div class="groups bg-white py-3 px-4 shadow-sm">
                       <div class="card-head d-flex justify-content-between">
                           <h5 class="mb-4">Suggested Groups</h5>
-                          <a href="#" class="btn btn-link">See All</a>
+                          {{-- <a href="#" class="btn btn-link">See All</a> --}}
                       </div>
-                      <div class="row">
+                      <div class="row" id="searchResultsD">
                        
                         @foreach ($darets as $daret)
                       
                        
                           <div class="col-md-3 col-sm-6">
                               <div class="card group-card shadow-sm">
-                                  <img src="images/groups/visitor.png"
+                                  <img src="{{asset('images/groups/visitor.png')}}"
                                       class="card-img-top group-card-image" alt="Group image">
                                   <div class="card-body">
                                       <b>{{$daret->name}}</b>
@@ -138,11 +139,12 @@
 
 
 
+
 @include('partials.footer')
     <!-- Core -->
-    <script src="js/jquery/jquery-3.3.1.min.js"></script>
-    <script src="js/popper/popper.min.js"></script>
-    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script src="{{asset('js/jquery/jquery-3.3.1.min.js')}}"></script>
+    <script src="{{asset('js/popper/popper.min.js')}}"></script>
+    <script src="{{asset('js/bootstrap/bootstrap.min.js')}}"></script>
     <!-- Optional -->
     <script type="text/javascript">
         $("#menu-toggle").click(function (e) {
@@ -151,9 +153,8 @@
         });
 
     </script>
-    <script src="js/app.js"></script>
-    <script src="js/components/components.js"></script>
-
+    <script src="{{asset('js/app.js')}}"></script>
+    <script src="{{asset('js/components/components.js')}}"></script>
 
 
 

@@ -14,13 +14,13 @@
            
           <li class="list-group-item d-flex justify-content-between align-items-center ">
               <a href="{{route('my_daret')}}" class="sidebar-item"><img
-                      src="../images/icons/left-sidebar/group.png" alt="group"> Groups</a>
+                      src="{{asset('images/icons/left-sidebar/group.png')}}" alt="group"> Groups</a>
               <span class="badge badge-primary badge-pill"> {{$countdaret}} </span>
           </li>
         
           <li class="list-group-item d-flex justify-content-between align-items-center">
               <a href="{{route('indexinvit')}}" class="sidebar-item"><img
-                      src="../images/icons/left-sidebar/find-friends.png" alt="find-friends">
+                      src="{{asset('images/icons/left-sidebar/find-friends.png')}}" alt="find-friends">
                   invitations</a>
               <span class="badge badge-primary badge-pill">{{$countnotif}}</span>
           </li>

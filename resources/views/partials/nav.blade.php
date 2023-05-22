@@ -1,4 +1,5 @@
 @php
+
   $notifications = Auth::user()->notifications()->where('read', '=', 'unread')->latest()->take(3)->get();
   $unread = Auth::user()->notifications()->where('read', '=', 'unread')->count();
 @endphp
@@ -7,39 +8,21 @@
         <ul class="nav navbar-nav enable-mobile px-2">
             <li class="nav-item">
                 <button type="button" class="btn nav-link p-0"><img
-                        src="images/icons/theme/post-image.png" class="f-nav-icon"
+                        src="{{asset('images/icons/theme/post-image.png')}}" class="f-nav-icon"
                         alt="Quick make post"></button>
             </li>
-            <li class="nav-item w-100 py-2">
-                <form class="d-inline form-inline w-100 px-4">
-                    <div class="input-group">
-                        <input type="text" class="form-control search-input"
-                            placeholder="Search for people, companies, events and more..."
-                            aria-label="Search" aria-describedby="search-addon">
-                        <div class="input-group-append">
-                            <button class="btn search-button" type="button"><i
-                                    class='bx bx-search'></i></button>
-                        </div>
-                    </div>
-                </form>
-            </li>
-            <li class="nav-item">
-                <a href="messages.html" class="nav-link nav-icon nav-links message-drop drop-w-tooltip"
-                    data-placement="bottom" data-title="Messages">
-                    <img src="images/icons/navbar/message.png"
-                        class="message-dropdown f-nav-icon" alt="navbar icon">
-                </a>
-            </li>
+          
         </ul>
         <ul class="navbar-nav mr-5 flex-row" id="main_menu">
             <a class="navbar-brand nav-item mr-lg-5" href="{{route("_daret")}}"><img
-                    src="images/logo-64x64.png" width="40" height="40" class="mr-3"
+                    src="{{asset('images/logo_daret.jpg')}}" width="40" height="40" class="mr-3"
                     alt="Logo"></a>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <form class="w-30 mx-2 my-auto d-inline form-inline mr-5">
                 <div class="input-group">
                     <input type="text" class="form-control search-input w-75"
-                        placeholder="Search for people, companies, events and more..."
+                 id="search-input" 
+                    placeholder="Search for darets..."
                         aria-label="Search" aria-describedby="search-addon">
                     <div class="input-group-append">
                         <button class="btn search-button" type="button"><i
@@ -51,7 +34,7 @@
                 <a href="#" class="nav-link nav-icon nav-links drop-w-tooltip" data-toggle="dropdown"
                     data-placement="bottom" data-title="Create" role="button" aria-haspopup="true"
                     aria-expanded="false">
-                    <img src="images/icons/navbar/create.png" alt="navbar icon">
+                    <img src="{{asset('images/icons/navbar/create.png')}}" alt="navbar icon">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right nav-dropdown-menu">
                     <a href="{{route('creer_daret')}}" class="dropdown-item" aria-describedby="createGroup">
@@ -94,7 +77,7 @@
                 <a href="#" class="nav-link nav-links rm-drop-mobile drop-w-tooltip"
                     data-toggle="dropdown" data-placement="bottom" data-title="Notifications"
                     role="button" aria-haspopup="true" aria-expanded="false">
-                    <img src="images/icons/navbar/notification.png" class="notification-bell"
+                    <img src="{{asset('images/icons/navbar/notification.png')}}" class="notification-bell"
                         alt="navbar icon"> <span class="badge badge-pill badge-primary">{{ $unread }}</span>
                 </a>
                 <ul class="dropdown-menu notify-drop dropdown-menu-right nav-drop shadow-sm">
@@ -138,7 +121,7 @@
                 <a href="#" class="nav-link nav-links nav-icon drop-w-tooltip" data-toggle="dropdown"
                     data-placement="bottom" data-title="Pages" role="button" aria-haspopup="true"
                     aria-expanded="false">
-                    <img src="images/icons/navbar/flag.png" alt="navbar icon">
+                    <img src="{{asset('images/icons/navbar/flag.png')}}" alt="navbar icon">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right nav-drop">
                   
@@ -146,40 +129,39 @@
                     <a class="dropdown-item" href="{{route('indexinvit')}}">invitations</a>
                 </div>
             </li>
-            <li class="nav-item s-nav">
-                <a href="profile.html" class="nav-link nav-links">
-                    <div class="menu-user-image">
-                        <img src="images/users/user-4.jpg" class="menu-user-img ml-1"
-                            alt="Menu Image">
-                    </div>
-                </a>
-            </li>
+         
             <li class="nav-item s-nav nav-icon dropdown">
                 <a href="settings.html" data-toggle="dropdown" data-placement="bottom"
                     data-title="Settings" class="nav-link settings-link rm-drop-mobile drop-w-tooltip"
-                    id="settings-dropdown"><img src="images/icons/navbar/settings.png"
+                    id="settings-dropdown"><img src="{{asset('images/icons/navbar/settings.png')}}"
                         class="nav-settings" alt="navbar icon"></a>
                 <div class="dropdown-menu dropdown-menu-right settings-dropdown shadow-sm"
                     aria-labelledby="settings-dropdown">
-                    <a class="dropdown-item" href="#">
-                        <img src="images/icons/navbar/help.png" alt="Navbar icon"> Help
-                        Center</a>
+                    @notadmin
+                    <a class="dropdown-item" href="/helpsupport">
+                        <img src="{{asset('images/icons/navbar/help.png')}}" alt="Navbar icon"> Help
+                        Center</a> 
+                        
+                  @endnotadmin
+
+                       
+                          @admin
                     <a class="dropdown-item d-flex align-items-center dark-mode"
-                        onClick="event.stopPropagation();" href="#">
-                        <img src="images/icons/navbar/moon.png" alt="Navbar icon"> Dark Mode
-                        <button type="button" class="btn btn-lg btn-toggle ml-auto" data-toggle="button"
-                            aria-pressed="false" autocomplete="off">
-                            <div class="handle"></div>
-                        </button>
+                  
+                        onClick="event.stopPropagation();" href="/admin/darets">
+                        <i class="bi bi-person-check-fill"></i>
+                        adminspace
+                       
                     </a>
+                    @endadmin
                     <a class="dropdown-item" href="/setting">
-                        <img src="images/icons/navbar/gear-1.png" alt="Navbar icon"> Settings</a>
+                        <img src="{{asset('images/icons/navbar/gear-1.png')}}" alt="Navbar icon"> Settings</a>
                     <a class="dropdown-item logout-btn" href="/logout">
-                        <img src="images/icons/navbar/logout.png" alt="Navbar icon"> Log Out</a>
+                        <img src="{{asset('images/icons/navbar/logout.png')}}" alt="Navbar icon"> Log Out</a>
                 </div>
             </li>
             <button type="button" class="btn nav-link" id="menu-toggle"><img
-                    src="images/icons/theme/navs.png" alt="Navbar navs"></button>
+                    src="{{asset('images/icons/theme/navs.png')}}" alt="Navbar navs"></button>
         </ul>
 
     </div>

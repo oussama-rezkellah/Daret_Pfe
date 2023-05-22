@@ -27,6 +27,7 @@
 @include('partials.nav')
 
 
+
 <div class="container-fluid" id="wrapper">
   <div class="row newsfeed-size">
       <div class="col-md-12 newsfeed-right-side">
@@ -43,48 +44,45 @@
                 @endif
                   <div class="groups bg-white py-3 px-4 shadow-sm">
                       <div class="card-head d-flex justify-content-between">
-                          <h5 class="mb-4">Votre group</h5>
-                          <a href="#" class="btn btn-link">See All</a>
+                          <h5 class="mb-4">Your Groups</h5>
+                          {{-- <a href="#" class="btn btn-link">See All</a> --}}
                           </div>
-                          <div class="row">
-                   
-                      @foreach ($membres as $membre)
-                     
-                      <div class="col-md-3 col-sm-6">
-                        <div class="card group-card shadow-sm">
-                          @if ($membre->role=='admin')
-                          <img src="../images/groups/group-1.png"
-                          class="card-img-top group-card-image" alt="Group image">
-                          @else
-                          <img src="../images/groups/user-im.jpeg"
-                          class="card-img-top group-card-image" alt="Group image">
-                          @endif
-                            
-                            <div class="card-body">
-                                <h5 class="card-title">{{$membre->daret->name}} 
-                                  @if ($membre->role=='admin')
-                                  <img src="../images/theme/verify.png" width="15px" class="verify" alt="Group verified">
-                                  @endif </h5>
-                                     
-                                   
-                                <p class="card-text">the amount : <b> {{$membre->daret->montant}}</b></p>
-                                <p class="card-text">state: <b> 
-                                  
-                              @if ($membre->daret->etat==0)
-                                  not yet
-                              @endif
-                              @if ($membre->daret->etat==1)
-                              already launched
-                              @endif
-                              </b></p>
-                              
-                                <a href="{{route('show',$membre)}}" class="btn btn-quick-link join-group-btn border w-100">view</a>
-                            </div>
-                        </div>
-                    </div>   
-                      
-                      @endforeach
-                    </div>
+                         <!-- Vue Laravel -->
+                       
+                             
+                    
+<div class="row" id="searchResults">
+    @if ($membres->count()!==0)
+  @foreach ($membres as $membre)
+      <div class="col-md-3 col-sm-6">
+          <div class="card group-card shadow-sm">
+              @if ($membre->role=='admin')
+              <img src="../images/groups/group-1.png" class="card-img-top group-card-image" alt="Group image">
+              @else
+              <img src="../images/groups/user-im.jpeg" class="card-img-top group-card-image" alt="Group image">
+              @endif
+              <div class="card-body">
+                  <h5 class="card-title">{{$membre->daret->name}} 
+                      @if ($membre->role=='admin')
+                      <img src="../images/theme/verify.png" width="15px" class="verify" alt="Group verified">
+                      @endif
+                  </h5>
+                  <p class="card-text">the amount : <b>{{$membre->daret->montant}}</b></p>
+                  <p class="card-text">state: <b>
+                      @if ($membre->daret->etat==0)
+                          not yet
+                      @endif
+                      @if ($membre->daret->etat==1)
+                          already launched
+                      @endif
+                  </b></p>
+                  <a href="{{route('show',$membre)}}" class="btn btn-quick-link join-group-btn border w-100">view</a>
+              </div>
+          </div>
+      </div>   
+  @endforeach
+  @endif
+</div>
                 </div>
                 
                  
@@ -95,9 +93,6 @@
       </div>
   </div>
 </div>
-
-
-
 @include('partials.footer')
     <!-- Core -->
     <script src="../js/jquery/jquery-3.3.1.min.js"></script>
@@ -113,8 +108,70 @@
     </script>
     <script src="../js/app.js"></script>
     <script src="../js/components/components.js"></script>
+   
+   
+   <script>
+        $('#search-input').on('keyup', function () {
+        var query = $(this).val();
+        $.ajax({
+            url: '/searchdaret',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                _token: '{{ csrf_token() }}',
+                query: query
+            },
+            success: function (response) {
+                var html = '';
+                $.each(response, function (index, member) {
+       html += '<div class="col-md-3 col-sm-6">';
+       html += '<div class="card group-card shadow-sm">';
+      
+        if (member.daret) {
+        // La relation daret existe
+        if (member.role == 'admin') {
+            html += '<img src="../images/groups/group-1.png" class="card-img-top group-card-image" alt="Group image">';
+        } else {
+            html += '<img src="../images/groups/user-im.jpeg" class="card-img-top group-card-image" alt="Group image">';
+        }
+        html += '<div class="card-body">';
+        html += '<h5 class="card-title">' + member.daret.name;
+        if (member.role == 'admin') {
+            html += '<img src="../images/theme/verify.png" width="15px" class="verify" alt="Group verified">';
+        }
+        html += '</h5>';
+        html += '<p class="card-text">the amount: <b>' + member.daret.montant + '</b></p>';
+        html += '<p class="card-text">state: <b>';
+        if (member.daret.etat == 0) {
+            html += 'not yet';
+        }
+        if (member.daret.etat == 1) {
+            html += 'already launched';
+        }
+        html += '</b></p>';
+    
+      
+    
+    html += '<a href="/myDarets/' + member.id + '" class="btn btn-quick-link join-group-btn border w-100">view</a>';
 
-
+     
+        html += '</div>';
+       } else {
+        // La relation daret n'existe pas
+        html += '<p>No daret associated with this member.</p>';
+      }
+    
+      html += '</div>';
+      html += '</div>';
+      });
+      $('#searchResults').html(html);
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+            }
+        });
+        });
+  </script>
 
 
 

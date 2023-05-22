@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\DB;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-    public function recherche($query)
+    public function recherche()
     {
+        $query = request()->input('query');
         $utilisateurs = User::where('username', 'like', '%' . $query . '%')
             ->orWhere('email', 'like', '%' . $query . '%')
             ->get();

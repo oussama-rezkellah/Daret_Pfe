@@ -37,7 +37,8 @@ class Daret extends Model
         'nbr_membre',
         'date_start',
         'date_final',
-        'periode_ac'
+        'periode_ac',
+        'curent_tour'
     ];
     function getRouteKeyName()
     {

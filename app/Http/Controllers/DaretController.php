@@ -14,7 +14,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\SupportMessage;
 
 
 class DaretController extends Controller
@@ -49,7 +51,7 @@ class DaretController extends Controller
         $user = Auth::user();
 
         $membres = $user->membres;
-        //dd($membres);
+
         return view('daret.Mydaret', compact('membres'));
     }
 
@@ -233,41 +235,64 @@ class DaretController extends Controller
             $membre->daret->update([
                 'date_start' => now(),
                 'etat' => 1,
+                'curent_tour' => 1
             ]);
 
             if ($membre->daret->type_periode == 'week') {
 
-                $date_finale = Carbon::now()->addWeeks($membre->daret->nbr_tour);
+                $date_final = Carbon::now()->addWeeks($membre->daret->nbr_tour);
             } else {
 
-                $date_finale = Carbon::now()->addMonths($membre->daret->nbr_tour);
+                $date_final = Carbon::now()->addMonths($membre->daret->nbr_tour);
             }
-            $membre->daret->date_final = $date_finale;
+            $membre->daret->date_final = $date_final;
         }
         $membre->daret->save();
         return redirect()->route('show', $membre)->with('msg', 'your daret successfully started');
     }
-    function updatetour(Tour $tour)
+    function updatetour(Tour $tour, membre $mem, $per)
     {
-        $tour->etat = 'payed';
-        $tour->save();
-        return back();
+        $tours = $mem->tours()
+            ->where('nbr', '<', $per)
+            ->where('etat', 'not_payed')
+            ->get();
+
+        if ($tours->isEmpty() || $per == 1) {
+            $tour->etat = 'payed';
+
+            $tour->save();
+            return back();
+        } else {
+            return back()->withErrors('virife first');
+        }
     }
-    function updatetourtake(Tour $tour, Membre $membre)
+    function updatetourtake(Tour $tour, Membre $membre, $per)
     {
+        $tourss = collect();
+        $x = 1;
+        $tours = $membre->tours()
+            ->where('nbr', '<', $per)
+            ->where('etat', 'not_payed')
+            ->get();
+        foreach ($membre->daret->membre as $mem) {
+            $tourss = $tourss->merge($mem->tours->where('nbr', $per));
+        }
 
-        $t = DB::table('tours')
-            ->where('nbr', '=',  $membre->daret->curent_tour)
-            ->where('etat', '=', 'not_payed')
-            ->first();
+        foreach ($tourss  as $t) {
+            if ($t->etat == 'not_payed') {
+                $x = 0;
+            }
+        }
 
-        if (!$t) {
+        if ($x == 1 && $tours->isEmpty()) {
+
             $tour->update([
                 'etat' => 'taked',
             ]);
+
             $tour->save();
             return  back();
-        } elseif ($t) {
+        } else {
             return back()->withErrors(['msg' => 'error not payed']);
         }
     }
@@ -276,9 +301,69 @@ class DaretController extends Controller
     {
         $name = $daret->name;
 
-        $daret->delete();
+        $membres = Membre::with('tours')->where('daret_id', $daret->id)->get();
+
+        $hasTours = false;
+        foreach ($membres as $membre) {
+            if ($membre->tours->count() > 0) {
+                $hasTours = true;
+                break;
+            }
+        }
+
+        if (!$hasTours) {
+            $daret->delete();
+            return redirect()->route('my_daret')->with('msg', 'Your Daret `' . $name . '` has been deleted.');
+        } else {
+            return back()->with('error', 'Cannot delete the Daret `' . $name . '` because it has associated tours.');
+        }
+    }
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $membre  = Membre::with('daret')
+            ->whereHas('daret', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->input('query') . '%');
+            })
+            ->where('user_id', Auth::id())
+            ->get();
 
 
-        return redirect()->back()->with('msg', 'your Daret ' . $name . ' has been deleted');
+        return response()->json($membre);
+    }
+
+    public function searchdaretD(Request $request)
+    {
+        $query = $request->input('query');
+
+        $user = Auth::user();
+        $darets = Daret::whereNotIn('id', function ($query) use ($user) {
+            $query->select('Daret_id')
+                ->from('membres')
+                ->where('user_id', $user->id);
+        })
+            ->where('name', 'like', '%' . $query . '%')
+            ->get();
+
+        return response()->json($darets);
+    }
+
+
+    public function sendEmail(Request $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+        ]);
+
+        $title = $request->input('title');
+        $description = $request->input('description');
+
+        $userEmail = Auth::user()->email;
+
+        Mail::to('eladnan871@gmail.com')->send(new SupportMessage($title, $description, $userEmail));
+
+        return redirect()->back()->with('success', 'Le formulaire a été soumis avec succès !');
     }
 }

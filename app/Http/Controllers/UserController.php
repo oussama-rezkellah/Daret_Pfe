@@ -7,6 +7,8 @@ use App\Mail\ResetMail;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Mail\VerificationMail;
+use App\Models\Notification;
+use App\Rules\MatchOldPassword;
 use App\Rules\MatchOlPassword;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -261,11 +263,5 @@ class UserController extends Controller
         $userId = Auth::id();
 
         // Update the notifications table
-            Notification::where('user_id', $userId)
-            ->where('read', 'unread')
-            ->update(['read' => 'read']);
-            return redirect('/');
-    }
 
-    
 }
